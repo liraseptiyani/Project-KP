@@ -38,12 +38,12 @@ Route::get('/user/dashboard', function () {
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
-    Route::get('/jenis', [JenisController::class, 'index'])->name('jenis.index');
-    Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan.index');
-    Route::get('/lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
-    Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
+    Route::resource('jenis', JenisController::class);
+    Route::resource('satuan', SatuanController::class);
+    Route::resource('lokasi', LokasiController::class);
+    Route::resource('barang', BarangController::class);
+
 
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barangmasuk.index');
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('barangkeluar.index');
@@ -56,3 +56,4 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 })->name('logout');
 
 });
+
