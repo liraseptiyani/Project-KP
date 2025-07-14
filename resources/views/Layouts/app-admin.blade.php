@@ -238,6 +238,9 @@
         <li class="{{ request()->routeIs('databarang.index') ? 'active' : '' }}">
             <a href="{{ route('databarang.index') }}"><span>Data Barang</span></a>
         </li>
+        <li class="{{ request()->routeIs('databarang.index') ? 'active' : '' }}">
+            <a href="{{ route('pengajuan.index') }}"><span>Pengajuan</span></a>
+        </li>
     </ul>
 </aside>
 

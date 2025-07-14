@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\BarangMasukController;
 use App\Http\Controllers\Admin\BarangKeluarController;
 use App\Http\Controllers\Admin\DataBarangController;
+use App\Http\Controllers\Admin\PengajuanController;
 
 
 Route::get('/', function () {
@@ -32,6 +33,7 @@ Route::get('/user/dashboard', function () {
     return view('user.dashboard');
 })->middleware('auth');
 
+
 //segala jenis admin
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
@@ -46,6 +48,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barangmasuk.index');
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('barangkeluar.index');
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('databarang.index');
+     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
     Route::post('/logout', function () {
     Auth::logout();
