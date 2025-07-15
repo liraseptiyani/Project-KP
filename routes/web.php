@@ -46,6 +46,8 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barangmasuk.index');
+    Route::get('/barang-masuk/create', [BarangMasukController::class, 'create'])->name('barang-masuk.create');
+    Route::post('/barang-masuk/store', [BarangMasukController::class, 'store'])->name('barang-masuk.store');
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('barangkeluar.index');
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('databarang.index');
      Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');

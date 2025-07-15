@@ -202,7 +202,7 @@
                 {{ Auth::user()->role ?? 'Admin' }} <i class="fas fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="dropdownContent">
-                <a href="#">Profil</a>
+                <!-- <a href="#">Profil</a> -->
                 <a href="{{ route('logout') }}"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
             </div>
