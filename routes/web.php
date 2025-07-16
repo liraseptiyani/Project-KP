@@ -43,14 +43,15 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::resource('satuan', SatuanController::class);
     Route::resource('lokasi', LokasiController::class);
     Route::resource('barang', BarangController::class);
-    Route::resource('barang-masuk', BarangMasukController::class);
 
+
+    // Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barangmasuk.index');
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barang-masuk.index');
     Route::get('/barang-masuk/create', [BarangMasukController::class, 'create'])->name('barang-masuk.create');
-    Route::get('barang-masuk/{id}/edit', [BarangMasukController::class, 'edit'])->name('barang-masuk.edit');
-    Route::post('/barang-masuk/store', [BarangMasukController::class, 'store'])->name('barang-masuk.store');
+    Route::get('/barang-masuk/{id}/edit', [BarangMasukController::class, 'edit'])->name('barang-masuk.edit');
+    Route::resource('barang-masuk', BarangMasukController::class);
 
-    Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('barangkeluar.index');
+    Route::resource('barang-keluar', BarangKeluarController::class);
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('databarang.index');
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 

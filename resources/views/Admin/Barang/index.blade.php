@@ -10,21 +10,15 @@
         font-weight: bold;
         padding: 8px 16px;
         border-radius: 5px;
-        text-decoration: none;
         border: none;
         float: right;
         margin-bottom: 15px;
-        transition: background-color 0.3s;
-    }
-
-    .btn-tambah:hover {
-        background-color: #2e7d32;
     }
 
     table {
         width: 100%;
-        border-collapse: collapse;
         background-color: white;
+        border-collapse: collapse;
     }
 
     th, td {
@@ -40,36 +34,86 @@
 
     td.actions {
         text-align: center;
-        vertical-align: middle;
     }
 
     .btn-edit, .btn-hapus {
-        padding: 5px 10px;
+        width: 70px;
+        padding: 5px 0;
         border-radius: 4px;
         border: none;
         font-size: 13px;
         font-weight: 600;
         cursor: pointer;
         color: white;
-        text-decoration: none;
         margin: 2px;
-        display: inline-block;
     }
 
     .btn-edit {
         background-color: #1976D2;
     }
 
-    .btn-edit:hover {
-        background-color: #1565C0;
-    }
-
     .btn-hapus {
         background-color: #D32F2F;
     }
 
+    .btn-edit:hover {
+        background-color: #1565C0;
+    }
+
     .btn-hapus:hover {
         background-color: #B71C1C;
+    }
+
+    /* Modal Hapus */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 10px;
+        width: 400px;
+        text-align: center;
+    }
+
+    .modal-content h3 {
+        margin-bottom: 25px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .modal-buttons button {
+        width: 80px;
+        padding: 8px 0;
+        font-weight: bold;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-yes {
+        background-color: #388E3C;
+        color: white;
+    }
+
+    .btn-no {
+        background-color: #ccc;
+        color: #333;
     }
 </style>
 @endpush
@@ -101,15 +145,59 @@
             <td>{{ $barang->satuan->satuan ?? '-' }}</td>
             <td>{{ $barang->lokasi->lokasi ?? '-' }}</td>
             <td class="actions">
-                <a href="{{ route('barang.edit', $barang->id) }}" class="btn-edit">Edit</a>
-                <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                <form action="{{ route('barang.edit', $barang->id) }}" method="GET" style="display:inline;">
+                    <button type="submit" class="btn-edit">Edit</button>
+                </form>
+                <button type="button" class="btn-hapus" onclick="showConfirmModal({{ $barang->id }})">Hapus</button>
+
+                <form id="delete-form-{{ $barang->id }}" action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:none;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="return confirm('Yakin hapus data ini?')">Hapus</button>
                 </form>
             </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+
+<!-- Modal Hapus -->
+<div id="confirmDeleteModal" class="modal">
+    <div class="modal-content">
+        <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
+        <div class="modal-buttons">
+            <button class="btn-yes" onclick="confirmDelete()">Yes</button>
+            <button class="btn-no" onclick="closeConfirmModal()">No</button>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    let deleteId = null;
+
+    function showConfirmModal(id) {
+        deleteId = id;
+        document.getElementById('confirmDeleteModal').style.display = 'block';
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmDeleteModal').style.display = 'none';
+        deleteId = null;
+    }
+
+    function confirmDelete() {
+        if (deleteId) {
+            document.getElementById('delete-form-' + deleteId).submit();
+        }
+    }
+
+    // Tutup modal jika klik di luar kotak
+    window.onclick = function(event) {
+        const modal = document.getElementById('confirmDeleteModal');
+        if (event.target === modal) {
+            closeConfirmModal();
+        }
+    }
+</script>
+@endpush

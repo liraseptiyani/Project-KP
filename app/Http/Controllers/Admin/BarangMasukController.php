@@ -56,17 +56,21 @@ class BarangMasukController extends Controller
         $barangMasuk->save();
 
         // Generate QR Code untuk barang masuk, simpan ke folder storage/app/public/qrcode
-        $qrContent = "ID Barang Masuk: " . $barangMasuk->id . "\n"
-    .                "Kode Barang: " . $barangMasuk->barang->kode_barang . "\n"
-    .                "Jenis: " . ($barangMasuk->barang->jenis->nama_jenis ?? '-') . "\n"
-    .                "Seri: " . ($barangMasuk->barang->seri_barang ?? '-') . "\n"
-    .                "Satuan: " . ($barangMasuk->barang->satuan->satuan ?? '-') . "\n"
-    .                "Lokasi: " . ($barangMasuk->barang->lokasi->lokasi ?? '-') . "\n"
-    .                "Tanggal Masuk: " . \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('d-m-Y');
-        $qrImage = QrCode::format('svg')->size(200)->generate($qrContent);
+       $qrData = [
+    'id' => $barangMasuk->id,
+    'kode_barang' => $barangMasuk->barang->kode_barang,
+    'jenis' => $barangMasuk->barang->jenis->nama_jenis ?? '-',
+    'seri' => $barangMasuk->barang->seri_barang ?? '-',
+    'satuan' => $barangMasuk->barang->satuan->satuan ?? '-',
+    'lokasi' => $barangMasuk->barang->lokasi->lokasi ?? '-',
+    'tanggal_masuk' => \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('d-m-Y'),
+];
 
-        $qrFileName = 'qrcode_barang_masuk_' . $barangMasuk->id . '.svg';
-        Storage::disk('public')->put('qrcode/' . $qrFileName, $qrImage);
+$qrContent = json_encode($qrData);
+$qrImage = QrCode::format('svg')->size(200)->generate($qrContent);
+
+Storage::disk('public')->put('qrcode/qrcode_barang_masuk_' . $barangMasuk->id . '.svg', $qrImage);
+
 
         // Jika ada kolom qr_code di tabel barang_masuk, simpan nama file QR ke database (optional)
         // $barangMasuk->qr_code = $qrFileName;

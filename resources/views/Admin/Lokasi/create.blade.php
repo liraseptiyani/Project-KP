@@ -11,8 +11,20 @@
             <input type="text" name="satuan" class="form-control" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ route('satuan.index') }}" class="btn btn-secondary">Kembali</a>
+        <div class="d-flex gap-2">
+            <button type="button"
+                    onclick="window.location='{{ route('satuan.index') }}'"
+                    class="btn btn-danger"
+                    style="width: 120px;">
+                Tutup
+            </button>
+
+            <button type="submit"
+                    class="btn btn-success"
+                    style="width: 120px;">
+                Simpan
+            </button>
+        </div>
     </form>
 </div>
 @endsection
