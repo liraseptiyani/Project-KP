@@ -273,7 +273,7 @@
             <a href="{{ route('databarang.index') }}"><span>Data Barang</span></a>
         </li>
         <li class="{{ request()->routeIs('pengajuan.index') ? 'active' : '' }}">
-            <a href="{{ route('pengajuan.index') }}"><span>Pengajuan</span></a>
+            <a href="{{ route('admin.pengajuan.index') }}"><span>Pengajuan</span></a>
         </li>
     </ul>
 </aside>

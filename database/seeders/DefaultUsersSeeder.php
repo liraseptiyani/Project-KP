@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -14,17 +15,33 @@ class DefaultUsersSeeder extends Seeder
     public function run(): void
     {
         // Admin
-        User::create([
-            'username' => 'admin',
-            'password' => Hash::make('passwordadmin'), // Ganti dengan password yang kuat dan mudah diingat
-            'role' => 'admin',
-        ]);
+        User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'password' => Hash::make('passwordadmin'),
+                'role' => 'admin',
+            ]
+        );
 
-        // User
-        User::create([
-            'username' => 'user',
-            'password' => Hash::make('passworduser'), // Ganti dengan password yang kuat
-            'role' => 'user',
-        ]);
+        // User per divisi
+        $divisiUsers = [
+            ['username' => 'CLD', 'password' => 'cld123'],
+            ['username' => 'RPD', 'password' => 'rpd123'],
+            ['username' => 'END', 'password' => 'end123'],
+            ['username' => 'EID', 'password' => 'eid123'],
+            ['username' => 'POD', 'password' => 'pod123'],
+            ['username' => 'PTD', 'password' => 'ptd123'],
+            ['username' => 'SFD', 'password' => 'sfd123'],
+        ];
+
+        foreach ($divisiUsers as $user) {
+            User::updateOrCreate(
+                ['username' => $user['username']],
+                [
+                    'password' => Hash::make($user['password']),
+                    'role' => 'user',
+                ]
+            );
+        }
     }
 }
