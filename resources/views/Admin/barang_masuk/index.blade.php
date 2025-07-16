@@ -1,98 +1,214 @@
-@extends('layouts.app')
+@extends('layouts.app-admin')
 
 @section('title', 'Barang Masuk')
 
+@push('styles')
+<style>
+.container {
+    max-width: 960px;
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin: 30px auto;
+}
+
+/* Judul di tengah */
+h2 {
+    color: #388E3C;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Baris tombol: flex untuk posisikan tombol di kanan */
+.button-row {
+    display: flex;
+    justify-content: flex-end; /* tombol ke kanan */
+    margin-bottom: 20px;
+}
+
+a.btn-tambah {
+    background-color: #388E3C;
+    color: white;
+    padding: 8px 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a.btn-tambah:hover {
+    background-color: #2e7d32;
+}
+
+/* Lebarkan tabel dan beri scroll jika perlu */
+.table-wrapper {
+    display: block;
+    overflow-x: auto;
+}
+
+table.table-barang {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+/* Tombol aksi */
+.aksi-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-aksi {
+    background-color: #1976d2;
+    color: white;
+    padding: 5px 12px;
+    font-size: 13px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.btn-aksi:hover {
+    background-color: #115293;
+}
+
+.btn-hapus {
+    background-color: #d32f2f;
+}
+
+.btn-hapus:hover {
+    background-color: #9a2323;
+}
+
+table.table-barang th,
+table.table-barang td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+table.table-barang th {
+    background-color: #388E3C;
+    color: white;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: #155724;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.qr-container {
+    text-align: center;
+}
+
+.qr-container img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    background: #fff;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.qr-container a {
+    font-size: 12px;
+    color: white;
+    background-color: #388E3C;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.qr-container a:hover {
+    background-color: #2e7d32;
+}
+</style>
+@endpush
+
 @section('content')
-<div class="container mt-4">
-    <h2>Form Barang Masuk</h2>
+<div class="container">
+    <h2>Data Barang Masuk</h2>
+
+    <div class="button-row">
+        <a href="{{ route('barang-masuk.create') }}" class="btn-tambah">+ Tambah Barang Masuk</a>
+    </div>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('barang-masuk.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-        {{-- Tanggal Masuk --}}
-        <div class="mb-3">
-            <label for="tanggal_masuk" class="form-label">Tanggal Masuk</label>
-            <input type="date" name="tanggal_masuk" class="form-control" required>
-        </div>
-
-        {{-- Dropdown Kode Barang --}}
-        <div class="mb-3">
-            <label for="kode_barang" class="form-label">Kode Barang</label>
-            <select name="kode_barang" id="kode_barang" class="form-select" required onchange="tampilkanDetailBarang()">
-                <option value="">-- Pilih Kode Barang --</option>
-                @foreach ($barang as $item)
-                    <option 
-                        value="{{ $item->id }}"
-                        data-id="{{ $item->id }}"
-                        data-jenis="{{ $item->jenis }}"
-                        data-seri="{{ $item->seri }}"
-                        data-satuan="{{ $item->satuan }}"
-                        data-lokasi="{{ $item->lokasi }}"
-                    >
-                        {{ $item->kode_barang }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        {{-- Tabel Detail Barang --}}
-        <div id="detail_barang" class="mb-3 d-none">
-            <label class="form-label">Detail Barang</label>
-            <table class="table table-bordered">
+    <div class="table-wrapper">
+        <table class="table-barang">
+            <thead>
                 <tr>
-                    <th>ID</th>
-                    <td id="val_id"></td>
-                </tr>
-                <tr>
+                    <th>No</th>
+                    <th>ID Barang Masuk</th>
+                    <th>Kode Barang</th>
                     <th>Jenis</th>
-                    <td id="val_jenis"></td>
-                </tr>
-                <tr>
                     <th>Seri</th>
-                    <td id="val_seri"></td>
-                </tr>
-                <tr>
                     <th>Satuan</th>
-                    <td id="val_satuan"></td>
-                </tr>
-                <tr>
                     <th>Lokasi</th>
-                    <td id="val_lokasi"></td>
+                    <th>Tanggal Masuk</th>
+                    <th>QR Code</th>
+                    <th>Aksi</th>
                 </tr>
-            </table>
-        </div>
+            </thead>
+            <tbody>
+                @forelse ($barangMasuk as $bm)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $bm->id }}</td>
+                        <td>{{ $bm->barang->kode_barang ?? '-' }}</td>
+                        <td>{{ $bm->barang->jenis->nama_jenis ?? '-' }}</td>
+                        <td>{{ $bm->barang->seri_barang ?? '-' }}</td>
+                        <td>{{ $bm->barang->satuan->satuan ?? '-' }}</td>
+                        <td>{{ $bm->barang->lokasi->lokasi ?? '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($bm->tanggal_masuk)->format('d-m-Y') }}</td>
+                        <td>
+                            @php
+                                $qrPath = Storage::url('qrcode/qrcode_barang_masuk_' . $bm->id . '.png');
+                            @endphp
+                            <div class="qr-container">
+                                <img src="{{ $qrPath }}" alt="QR Code Barang Masuk {{ $bm->id }}">
+                                <br>
+                                <a href="{{ $qrPath }}" download="qrcode_barang_masuk_{{ $bm->id }}.png">Download</a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="aksi-buttons">
+                                <a href="{{ route('barang-masuk.edit', $bm->id) }}" class="btn-aksi">Edit</a>
 
-        {{-- Upload File --}}
-        <div class="mb-3">
-            <label for="lampiran" class="form-label">Lampiran (optional)</label>
-            <input type="file" name="lampiran" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Simpan</button>
-    </form>
+                                <form action="{{ route('barang-masuk.destroy', $bm->id) }}" method="POST" onsubmit="return confirm('Yakin ingin hapus data ini?');" style="margin:0;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-aksi btn-hapus">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="10" style="text-align: center;">Belum ada data barang masuk.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<script>
-    function tampilkanDetailBarang() {
-        const select = document.getElementById('kode_barang');
-        const selected = select.options[select.selectedIndex];
-
-        if (selected.value === "") {
-            document.getElementById('detail_barang').classList.add('d-none');
-            return;
-        }
-
-        document.getElementById('val_id').innerText = selected.getAttribute('data-id');
-        document.getElementById('val_jenis').innerText = selected.getAttribute('data-jenis');
-        document.getElementById('val_seri').innerText = selected.getAttribute('data-seri');
-        document.getElementById('val_satuan').innerText = selected.getAttribute('data-satuan');
-        document.getElementById('val_lokasi').innerText = selected.getAttribute('data-lokasi');
-
-        document.getElementById('detail_barang').classList.remove('d-none');
-    }
-</script>
 @endsection

@@ -13,7 +13,7 @@ class BarangMasuk extends Model
     protected $fillable = ['tanggal_masuk', 'kode_barang', 'lampiran'];
 
     public function barang()
-    {
-        return $this->belongsTo(MasterBarang::class, 'kode_barang');
-    }
+{
+    return $this->belongsTo(Barang::class, 'barang_id');
+}
 }

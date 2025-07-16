@@ -202,7 +202,6 @@
                 {{ Auth::user()->role ?? 'Admin' }} <i class="fas fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="dropdownContent">
-                <!-- <a href="#">Profil</a> -->
                 <a href="{{ route('logout') }}"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
             </div>
@@ -230,7 +229,7 @@
         </li>
 
         <li class="{{ request()->routeIs('barangmasuk.index') ? 'active' : '' }}">
-            <a href="{{ route('barangmasuk.index') }}"><span>Barang Masuk</span></a>
+            <a href="{{ route('barang-masuk.index') }}"><span>Barang Masuk</span></a>
         </li>
         <li class="{{ request()->routeIs('barangkeluar.index') ? 'active' : '' }}">
             <a href="{{ route('barangkeluar.index') }}"><span>Barang Keluar</span></a>
@@ -238,7 +237,7 @@
         <li class="{{ request()->routeIs('databarang.index') ? 'active' : '' }}">
             <a href="{{ route('databarang.index') }}"><span>Data Barang</span></a>
         </li>
-        <li class="{{ request()->routeIs('databarang.index') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('pengajuan.index') ? 'active' : '' }}">
             <a href="{{ route('pengajuan.index') }}"><span>Pengajuan</span></a>
         </li>
     </ul>
@@ -266,13 +265,12 @@
         parent.classList.toggle('open');
 
         const arrow = element.querySelector('.arrow');
-        if (parent.classList.contains('open')) {
-            arrow.style.transform = 'rotate(90deg)';
-        } else {
-            arrow.style.transform = 'rotate(0deg)';
-        }
+        arrow.style.transform = parent.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
     }
 </script>
+
+<!-- ⬇️ Ini WAJIB untuk munculin script dari halaman @push('scripts') seperti di index -->
+@stack('scripts')
 
 </body>
 </html>

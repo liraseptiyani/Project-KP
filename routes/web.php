@@ -34,27 +34,32 @@ Route::get('/user/dashboard', function () {
 })->middleware('auth');
 
 
-//segala jenis admin
+// segala jenis admin
 Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
 Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
 
-    Route::get('/jenis', [JenisController::class, 'index'])->name('jenis.index');
-    Route::get('/satuan', [SatuanController::class, 'index'])->name('satuan.index');
-    Route::get('/lokasi', [LokasiController::class, 'index'])->name('lokasi.index');
-    Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
+    Route::resource('jenis', JenisController::class);
+    Route::resource('satuan', SatuanController::class);
+    Route::resource('lokasi', LokasiController::class);
+    Route::resource('barang', BarangController::class);
+    Route::resource('barang-masuk', BarangMasukController::class);
 
-    Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barangmasuk.index');
+    Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barang-masuk.index');
     Route::get('/barang-masuk/create', [BarangMasukController::class, 'create'])->name('barang-masuk.create');
+    Route::get('barang-masuk/{id}/edit', [BarangMasukController::class, 'edit'])->name('barang-masuk.edit');
     Route::post('/barang-masuk/store', [BarangMasukController::class, 'store'])->name('barang-masuk.store');
+
     Route::get('/barang-keluar', [BarangKeluarController::class, 'index'])->name('barangkeluar.index');
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('databarang.index');
-     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
+    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
     Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/login');
-})->name('logout');
+        Auth::logout();
+        return redirect('/login');
+    })->name('logout');
 
 });
+
+
+
