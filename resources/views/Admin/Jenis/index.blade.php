@@ -44,7 +44,8 @@
     }
 
     .btn-edit, .btn-hapus {
-        padding: 5px 10px;
+        width: 70px;
+        padding: 5px 0;
         border-radius: 4px;
         border: none;
         font-size: 13px;
@@ -54,6 +55,7 @@
         text-decoration: none;
         margin: 2px;
         display: inline-block;
+        text-align: center;
     }
 
     .btn-edit {
@@ -72,7 +74,6 @@
         background-color: #B71C1C;
     }
 
-    /* Modal */
     .modal {
         display: none;
         position: fixed;
@@ -93,12 +94,14 @@
         width: 400px;
         border-radius: 8px;
         position: relative;
+        text-align: center;
     }
 
     .modal-content h3 {
         margin-top: 0;
-        color: #388E3C;
-        text-align: center;
+        color: #000;
+        font-weight: 600;
+        font-size: 18px;
     }
 
     .close {
@@ -129,8 +132,35 @@
     }
 
     .modal-buttons {
-        text-align: right;
         margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .modal-buttons .btn {
+        width: 80px;
+        padding: 10px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+    }
+
+    .modal-buttons .btn-success {
+        background-color: #388E3C;
+    }
+
+    .modal-buttons .btn-danger {
+        background-color: #ccc;
+        color: black;
+    }
+
+    .modal-buttons .btn-danger:hover {
+        background-color: #bbb;
     }
 </style>
 @endpush
@@ -158,12 +188,10 @@
             <td>{{ $jenis->nama_jenis }}</td>
             <td>{{ $jenis->keterangan }}</td>
             <td class="actions">
-                <a href="{{ route('jenis.edit', $jenis->id) }}" class="btn-edit">Edit</a>
-                <form action="{{ route('jenis.destroy', $jenis->id) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="return confirm('Yakin hapus data ini?')">Hapus</button>
+                <form action="{{ route('jenis.edit', $jenis->id) }}" method="GET" style="display:inline;">
+                    <button type="submit" class="btn-edit">Edit</button>
                 </form>
+                <button type="button" class="btn-hapus" onclick="confirmDelete('{{ $jenis->id }}')">Hapus</button>
             </td>
         </tr>
         @endforeach
@@ -186,8 +214,23 @@
                 <textarea id="keterangan" name="keterangan" required></textarea>
             </div>
             <div class="modal-buttons">
-                <button type="submit" class="btn-tambah">Simpan</button>
-                <button type="button" class="btn-hapus" onclick="closeModal()">Tutup</button>
+                <button type="submit" class="btn btn-success">Simpan</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Tutup</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Hapus -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
+        <form id="deleteForm" method="POST">
+            @csrf
+            @method('DELETE')
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-success">Yes</button>
+                <button type="button" class="btn btn-danger" onclick="closeDeleteModal()">No</button>
             </div>
         </form>
     </div>
@@ -204,10 +247,23 @@
         document.getElementById('tambahModal').style.display = 'none';
     }
 
+    function confirmDelete(id) {
+        const form = document.getElementById('deleteForm');
+        form.action = `/jenis/${id}`;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+    }
+
     window.onclick = function(event) {
-        const modal = document.getElementById('tambahModal');
-        if (event.target == modal) {
-            modal.style.display = 'none';
+        const tambahModal = document.getElementById('tambahModal');
+        const deleteModal = document.getElementById('deleteModal');
+        if (event.target == tambahModal) {
+            tambahModal.style.display = 'none';
+        } else if (event.target == deleteModal) {
+            deleteModal.style.display = 'none';
         }
     }
 </script>

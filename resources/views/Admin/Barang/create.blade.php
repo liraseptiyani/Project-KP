@@ -40,30 +40,39 @@
         box-sizing: border-box;
     }
 
+    .button-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .btn-simpan, .btn-batal {
+        width: 120px;
+        padding: 8px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
     .btn-simpan {
         background-color: #388E3C;
         color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-right: 10px;
+    }
+
+    .btn-simpan:hover {
+        background-color: #2e7d32;
     }
 
     .btn-batal {
         background-color: #D32F2F;
         color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
         text-decoration: none;
-    }
-
-    .btn-simpan:hover {
-        background-color: #2e7d32;
+        display: inline-block;
     }
 
     .btn-batal:hover {
@@ -118,8 +127,10 @@
             </select>
         </div>
 
-        <button type="submit" class="btn-simpan">Simpan</button>
-        <a href="{{ route('barang.index') }}" class="btn-batal">Batal</a>
+        <div class="button-group">
+            <button type="submit" class="btn-simpan">Simpan</button>
+            <a href="{{ route('barang.index') }}" class="btn-batal">Batal</a>
+        </div>
     </form>
 </div>
 @endsection
