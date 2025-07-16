@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'Aplikasi Saya')</title>
+    <title>@yield('title', 'Divisi | Pengajuan Barang')</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -130,28 +130,6 @@
             background-color: #1B5E20;
         }
 
-        .sidebar ul li.dropdown-menu > a {
-            cursor: pointer;
-        }
-
-        .sidebar ul li ul.submenu {
-            display: none;
-            background-color: #388e3c;
-        }
-
-        .sidebar ul li ul.submenu li a {
-            padding: 12px 40px;
-            background-color: #388e3c;
-        }
-
-        .sidebar ul li.dropdown-menu.open ul.submenu {
-            display: block;
-        }
-
-        .sidebar ul li ul.submenu li a:hover {
-            background-color: #1b5e20;
-        }
-
         .content {
             margin-left: 220px;
             padding: 85px 30px 30px 30px;
@@ -199,7 +177,7 @@
     <div class="user-role-container">
         <div class="dropdown" id="userDropdown">
             <button class="user-role" id="userRoleBtn">
-                {{ Auth::user()->role ?? 'Admin' }} <i class="fas fa-caret-down"></i>
+                Divisi {{ Auth::user()->username }} <i class="fas fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="dropdownContent">
                 <a href="{{ route('logout') }}"
@@ -215,30 +193,8 @@
 
 <aside class="sidebar">
     <ul>
-        <li class="dropdown-menu {{ request()->is('jenis*') || request()->is('satuan*') || request()->is('lokasi*') || request()->is('barang*') ? 'open' : '' }}">
-            <a href="javascript:void(0)" onclick="toggleDropdown(this)">
-                <span>Master Barang</span>
-                <span class="arrow" style="float: right;">▼</span>
-            </a>
-            <ul class="submenu">
-                <li><a href="{{ route('jenis.index') }}">Jenis</a></li>
-                <li><a href="{{ route('satuan.index') }}">Satuan</a></li>
-                <li><a href="{{ route('lokasi.index') }}">Lokasi</a></li>
-                <li><a href="{{ route('barang.index') }}">Barang</a></li>
-            </ul>
-        </li>
-
-        <li class="{{ request()->routeIs('barangmasuk.index') ? 'active' : '' }}">
-            <a href="{{ route('barangmasuk.index') }}"><span>Barang Masuk</span></a>
-        </li>
-        <li class="{{ request()->routeIs('barangkeluar.index') ? 'active' : '' }}">
-            <a href="{{ route('barangkeluar.index') }}"><span>Barang Keluar</span></a>
-        </li>
-        <li class="{{ request()->routeIs('databarang.index') ? 'active' : '' }}">
-            <a href="{{ route('databarang.index') }}"><span>Data Barang</span></a>
-        </li>
         <li class="{{ request()->routeIs('pengajuan.index') ? 'active' : '' }}">
-            <a href="{{ route('admin.pengajuan.index') }}"><span>Pengajuan</span></a>
+            <a href="{{ route('pengajuan.index') }}"><span>Pengajuan Barang</span></a>
         </li>
     </ul>
 </aside>
@@ -259,17 +215,8 @@
     document.addEventListener('click', () => {
         dropdown.classList.remove('show');
     });
-
-    function toggleDropdown(element) {
-        const parent = element.closest('li');
-        parent.classList.toggle('open');
-
-        const arrow = element.querySelector('.arrow');
-        arrow.style.transform = parent.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
-    }
 </script>
 
-<!-- ⬇️ Ini WAJIB untuk munculin script dari halaman @push('scripts') seperti di index -->
 @stack('scripts')
 
 </body>
