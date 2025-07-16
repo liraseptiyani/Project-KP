@@ -44,7 +44,8 @@
     }
 
     .btn-edit, .btn-hapus {
-        padding: 5px 10px;
+        width: 70px;
+        padding: 5px 0;
         border-radius: 4px;
         border: none;
         font-size: 13px;
@@ -54,6 +55,7 @@
         text-decoration: none;
         margin: 2px;
         display: inline-block;
+        text-align: center;
     }
 
     .btn-edit {
@@ -129,8 +131,38 @@
     }
 
     .modal-buttons {
-        text-align: right;
         margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .modal-buttons .btn {
+        width: 120px;
+        padding: 10px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+    }
+
+    .modal-buttons .btn-success {
+        background-color: #388E3C;
+    }
+
+    .modal-buttons .btn-success:hover {
+        background-color: #2e7d32;
+    }
+
+    .modal-buttons .btn-danger {
+        background-color: #D32F2F;
+    }
+
+    .modal-buttons .btn-danger:hover {
+        background-color: #B71C1C;
     }
 </style>
 @endpush
@@ -158,7 +190,9 @@
             <td>{{ $satuan->satuan }}</td>
             <td>{{ $satuan->keterangan }}</td>
             <td class="actions">
-                <a href="{{ route('satuan.edit', $satuan->id) }}" class="btn-edit">Edit</a>
+                <form action="{{ route('satuan.edit', $satuan->id) }}" method="GET" style="display:inline;">
+                    <button type="submit" class="btn-edit">Edit</button>
+                </form>
                 <form action="{{ route('satuan.destroy', $satuan->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
@@ -186,8 +220,8 @@
                 <textarea id="keterangan" name="keterangan" required></textarea>
             </div>
             <div class="modal-buttons">
-                <button type="submit" class="btn-tambah">Simpan</button>
-                <button type="button" class="btn-hapus" onclick="closeModal()">Tutup</button>
+                <button type="submit" class="btn btn-success">Simpan</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Tutup</button>
             </div>
         </form>
     </div>
