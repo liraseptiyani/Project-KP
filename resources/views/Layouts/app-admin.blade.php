@@ -264,7 +264,7 @@
 
 
         <li class="{{ request()->routeIs('barangmasuk.index') ? 'active' : '' }}">
-            <a href="{{ route('barangmasuk.index') }}"><span>Barang Masuk</span></a>
+            <a href="{{ route('barang-masuk.index') }}"><span>Barang Masuk</span></a>
         </li>
         <li class="{{ request()->routeIs('barangkeluar.index') ? 'active' : '' }}">
             <a href="{{ route('barang-keluar.index') }}"><span>Barang Keluar</span></a>

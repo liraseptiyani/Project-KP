@@ -145,21 +145,22 @@
 <script>
     const barangData = @json($barangList);
 
-    function onScanSuccess(decodedText, decodedResult) {
-        const barang = barangData.find(b => b.kode_barang === decodedText);
+    function onScanSuccess(decodedText) {
+    try {
+        const barang = JSON.parse(decodedText);
 
-        if (barang) {
-            document.getElementById('barang_id').value = barang.id;
-            document.getElementById('kode_barang').value = barang.kode_barang;
-            document.getElementById('jenis').value = barang.jenis.nama_jenis;
-            document.getElementById('satuan').value = barang.satuan.satuan;
-            document.getElementById('lokasi').value = barang.lokasi.lokasi;
-        } else {
-            alert('Barang tidak ditemukan!');
-        }
+        document.getElementById('barang_id').value = barang.id;
+        document.getElementById('kode_barang').value = barang.kode_barang;
+        document.getElementById('jenis').value = barang.jenis;
+        document.getElementById('satuan').value = barang.satuan;
+        document.getElementById('lokasi').value = barang.lokasi;
 
-        html5QrcodeScanner.clear();
+    } catch (e) {
+        alert('QR Code tidak valid atau tidak dikenali.');
     }
+
+    html5QrcodeScanner.clear();
+}
 
     const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
     html5QrcodeScanner.render(onScanSuccess);
