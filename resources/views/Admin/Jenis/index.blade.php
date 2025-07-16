@@ -74,6 +74,7 @@
         background-color: #B71C1C;
     }
 
+    /* Modal Tambah */
     .modal {
         display: none;
         position: fixed;
@@ -94,14 +95,12 @@
         width: 400px;
         border-radius: 8px;
         position: relative;
-        text-align: center;
     }
 
     .modal-content h3 {
         margin-top: 0;
-        color: #000;
-        font-weight: 600;
-        font-size: 18px;
+        color: #388E3C;
+        text-align: center;
     }
 
     .close {
@@ -139,7 +138,7 @@
     }
 
     .modal-buttons .btn {
-        width: 80px;
+        width: 120px;
         padding: 10px;
         font-weight: bold;
         border: none;
@@ -154,13 +153,16 @@
         background-color: #388E3C;
     }
 
+    .modal-buttons .btn-success:hover {
+        background-color: #2e7d32;
+    }
+
     .modal-buttons .btn-danger {
-        background-color: #ccc;
-        color: black;
+        background-color: #D32F2F;
     }
 
     .modal-buttons .btn-danger:hover {
-        background-color: #bbb;
+        background-color: #B71C1C;
     }
 </style>
 @endpush
@@ -224,13 +226,13 @@
 <!-- Modal Hapus -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
-        <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
+        <h3>Apakah anda yakin ingin menghapus data ini?</h3>
         <form id="deleteForm" method="POST">
             @csrf
             @method('DELETE')
             <div class="modal-buttons">
-                <button type="submit" class="btn btn-success">Yes</button>
-                <button type="button" class="btn btn-danger" onclick="closeDeleteModal()">No</button>
+                <button type="submit" class="btn btn-success">Ya</button>
+                <button type="button" class="btn btn-danger" onclick="closeDeleteModal()">Tidak</button>
             </div>
         </form>
     </div>

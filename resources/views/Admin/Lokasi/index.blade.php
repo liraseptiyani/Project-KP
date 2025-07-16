@@ -74,7 +74,7 @@
         background-color: #B71C1C;
     }
 
-    /* Modal Styles */
+    /* Modal Tambah */
     .modal {
         display: none;
         position: fixed;
@@ -190,10 +190,12 @@
                 <form action="{{ route('lokasi.edit', $lokasi->id) }}" method="GET" style="display:inline;">
                     <button type="submit" class="btn-edit">Edit</button>
                 </form>
-                <form action="{{ route('lokasi.destroy', $lokasi->id) }}" method="POST" style="display:inline;">
+
+                <button type="button" class="btn-hapus" onclick="showDeleteModal({{ $lokasi->id }})">Hapus</button>
+
+                <form id="delete-form-{{ $lokasi->id }}" action="{{ route('lokasi.destroy', $lokasi->id) }}" method="POST" style="display: none;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="return confirm('Yakin hapus data ini?')">Hapus</button>
                 </form>
             </td>
         </tr>
@@ -219,10 +221,22 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Hapus -->
+<div id="deleteConfirmModal" class="modal">
+    <div class="modal-content">
+        <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
+        <div class="modal-buttons">
+            <button class="btn btn-success" onclick="confirmDelete()">Yes</button>
+            <button class="btn btn-danger" onclick="closeDeleteModal()">No</button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
+    // Tambah Modal
     function openModal() {
         document.getElementById('tambahModal').style.display = 'block';
     }
@@ -232,9 +246,34 @@
     }
 
     window.onclick = function(event) {
-        const modal = document.getElementById('tambahModal');
-        if (event.target == modal) {
-            modal.style.display = 'none';
+        const tambahModal = document.getElementById('tambahModal');
+        const deleteModal = document.getElementById('deleteConfirmModal');
+
+        if (event.target === tambahModal) {
+            tambahModal.style.display = 'none';
+        }
+
+        if (event.target === deleteModal) {
+            deleteModal.style.display = 'none';
+        }
+    }
+
+    // Delete Modal
+    let deleteId = null;
+
+    function showDeleteModal(id) {
+        deleteId = id;
+        document.getElementById('deleteConfirmModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteConfirmModal').style.display = 'none';
+        deleteId = null;
+    }
+
+    function confirmDelete() {
+        if (deleteId !== null) {
+            document.getElementById('delete-form-' + deleteId).submit();
         }
     }
 </script>
