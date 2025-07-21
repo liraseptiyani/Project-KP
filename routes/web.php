@@ -62,6 +62,8 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/barang-masuk/create', [BarangMasukController::class, 'create'])->name('barang-masuk.create');
     Route::get('/barang-masuk/{id}/edit', [BarangMasukController::class, 'edit'])->name('barang-masuk.edit');
     Route::resource('barang-masuk', BarangMasukController::class);
+    Route::get('/admin/data-barang/stok', [DataBarangController::class, 'stokBarang']);
+
 
     // Barang Keluar
     Route::resource('barang-keluar', BarangKeluarController::class);

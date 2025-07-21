@@ -40,6 +40,12 @@
         box-sizing: border-box;
     }
 
+    .qr-preview {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
     .btn-primary {
         background-color: #388E3C;
         color: white;
@@ -54,24 +60,6 @@
 
     .btn-primary:hover {
         background-color: #2e7d32;
-    }
-
-    .table-bordered {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    .table-bordered th,
-    .table-bordered td {
-        border: 1px solid #ddd;
-        padding: 10px 12px;
-    }
-
-    .table-bordered th {
-        background-color: #388E3C;
-        color: white;
-        width: 30%;
     }
 
     .alert-success {
@@ -109,11 +97,11 @@
                 @foreach ($barangList as $item)
                     <option 
                         value="{{ $item->id }}"
-                        data-kode="{{ $item->kode_barang }}"
                         data-jenis="{{ $item->jenis->nama_jenis ?? '-' }}"
                         data-seri="{{ $item->seri_barang }}"
                         data-satuan="{{ $item->satuan->satuan ?? '-' }}"
                         data-lokasi="{{ $item->lokasi->lokasi ?? '-' }}"
+                        data-qr="{{ asset('storage/qrcodes/' . $item->qr_code) }}"
                         {{ old('kode_barang') == $item->id ? 'selected' : '' }}
                     >
                         {{ $item->kode_barang }}
@@ -122,25 +110,31 @@
             </select>
         </div>
 
-       <div id="detail_barang">
-    <div class="form-group">
-        <label>Jenis</label>
-        <input type="text" id="val_jenis" class="form-control" readonly>
-    </div>
-    <div class="form-group">
-        <label>Seri</label>
-        <input type="text" id="val_seri" class="form-control" readonly>
-    </div>
-    <div class="form-group">
-        <label>Satuan</label>
-        <input type="text" id="val_satuan" class="form-control" readonly>
-    </div>
-    <div class="form-group">
-        <label>Lokasi</label>
-        <input type="text" id="val_lokasi" class="form-control" readonly>
-    </div>
-</div>
+        <div id="detail_barang">
+            <div class="form-group">
+                <label>Jenis</label>
+                <input type="text" id="val_jenis" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label>Seri</label>
+                <input type="text" id="val_seri" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label>Satuan</label>
+                <input type="text" id="val_satuan" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label>Lokasi</label>
+                <input type="text" id="val_lokasi" class="form-control" readonly>
+            </div>
 
+            <div class="form-group">
+                <label>QR Code</label>
+                <div class="qr-preview">
+                    <img id="val_qr" src="" alt="QR Code" width="120">
+                </div>
+            </div>
+        </div>
 
         <div class="form-group">
             <label for="lampiran">Lampiran</label>
@@ -160,11 +154,11 @@ function tampilkanDetailBarang() {
     document.getElementById('val_seri').value   = selected.getAttribute('data-seri') || '';
     document.getElementById('val_satuan').value = selected.getAttribute('data-satuan') || '';
     document.getElementById('val_lokasi').value = selected.getAttribute('data-lokasi') || '';
+    document.getElementById('val_qr').src       = selected.getAttribute('data-qr') || '';
 }
 
-
 window.addEventListener('DOMContentLoaded', () => {
-    tampilkanDetailBarang(); // auto-tampilkan saat load jika sudah ada yang dipilih
+    tampilkanDetailBarang();
 });
 </script>
 @endsection
