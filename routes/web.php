@@ -41,33 +41,48 @@ Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard')
 
 Route::middleware(['auth', 'is_admin'])->group(function () {
 
+    // Master Data
     Route::resource('jenis', JenisController::class);
     Route::resource('satuan', SatuanController::class);
     Route::resource('lokasi', LokasiController::class);
     Route::resource('barang', BarangController::class);
 
+    Route::get('/barang/generate-seri/{prefix}', [BarangController::class, 'generateSeri']);
 
-    // Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barangmasuk.index');
+
+
+    // 🔍 Tambahkan ini untuk Ajax ambil data barang by kode_barang (dari QR Code)
+  Route::get('/barang/{id}/download-qr', [BarangController::class, 'cetakPdfQr'])->name('admin.barang.qrcode.pdf');
+
+
+
+
+    // Barang Masuk
     Route::get('/barang-masuk', [BarangMasukController::class, 'index'])->name('barang-masuk.index');
     Route::get('/barang-masuk/create', [BarangMasukController::class, 'create'])->name('barang-masuk.create');
     Route::get('/barang-masuk/{id}/edit', [BarangMasukController::class, 'edit'])->name('barang-masuk.edit');
     Route::resource('barang-masuk', BarangMasukController::class);
 
+    // Barang Keluar
     Route::resource('barang-keluar', BarangKeluarController::class);
+
+    // Data Barang
     Route::get('/data-barang', [DataBarangController::class, 'index'])->name('databarang.index');
+
+    // Pengajuan
     Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('pengajuan.index');
 
-    
-    Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
-    Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('admin.pengajuan.index');
+    // Pengajuan khusus admin
+    Route::prefix('admin')->group(function () {
+        Route::get('/pengajuan', [PengajuanController::class, 'index'])->name('admin.pengajuan.index');
     });
 
+    // Logout
     Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/login');
-})->name('logout');
+        Auth::logout();
+        return redirect('/login');
+    })->name('logout');
 });
-
 //=============================//
 //      ROUTE UNTUK USER       //
 //=============================//

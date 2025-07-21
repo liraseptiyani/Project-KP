@@ -93,23 +93,26 @@
             <div id="reader" style="width: 300px;"></div>
         </div>
 
-        <input type="hidden" name="barang_id" id="barang_id">
+        <input type="hidden" name="barang_id" id="barang_id" required>
 
         <div class="form-group">
-            <label>Kode Barang</label>
-            <input type="text" id="kode_barang" readonly>
+            <label>Seri Barang</label>
+            <input type="text" id="seri_barang" name="seri_barang" readonly required>
         </div>
+
         <div class="form-group">
             <label>Jenis</label>
-            <input type="text" id="jenis" readonly>
+            <input type="text" id="jenis" name="jenis" readonly>
         </div>
+
         <div class="form-group">
             <label>Satuan</label>
-            <input type="text" id="satuan" readonly>
+            <input type="text" id="satuan" name="satuan" readonly>
         </div>
+
         <div class="form-group">
             <label>Lokasi</label>
-            <input type="text" id="lokasi" readonly>
+            <input type="text" id="lokasi" name="lokasi" readonly>
         </div>
 
         <div class="form-group">
@@ -143,26 +146,27 @@
 @push('scripts')
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
-    const barangData = @json($barangList);
-
-    function onScanSuccess(decodedText) {
+function onScanSuccess(decodedText) {
     try {
-        const barang = JSON.parse(decodedText);
+        const data = JSON.parse(decodedText); // Format QR dalam JSON
 
-        document.getElementById('barang_id').value = barang.id;
-        document.getElementById('kode_barang').value = barang.kode_barang;
-        document.getElementById('jenis').value = barang.jenis;
-        document.getElementById('satuan').value = barang.satuan;
-        document.getElementById('lokasi').value = barang.lokasi;
+        document.getElementById('barang_id').value = data.id || '';
+        document.getElementById('seri_barang').value = data.seri_barang || '';
+        document.getElementById('jenis').value = data.jenis || '';
+        document.getElementById('satuan').value = data.satuan || '';
+        document.getElementById('lokasi').value = data.lokasi || '';
 
-    } catch (e) {
-        alert('QR Code tidak valid atau tidak dikenali.');
+        html5QrcodeScanner.clear(); // Stop scanning
+    } catch (error) {
+        alert('QR Code tidak valid. Format harus JSON dengan field: id, seri_barang, jenis, satuan, lokasi');
+        console.error(error);
     }
-
-    html5QrcodeScanner.clear();
 }
 
-    const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-    html5QrcodeScanner.render(onScanSuccess);
+const html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+    fps: 10,
+    qrbox: 250
+});
+html5QrcodeScanner.render(onScanSuccess);
 </script>
 @endpush

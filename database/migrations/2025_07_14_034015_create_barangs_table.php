@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
 
-    public function up()
+    Public function up()
 {
     Schema::create('barangs', function (Blueprint $table) {
         $table->id();
@@ -18,7 +18,7 @@ return new class extends Migration
         $table->string('seri_barang')->unique();   // otomatis
         $table->unsignedBigInteger('jenis_id');    // dropdown
         $table->unsignedBigInteger('satuan_id');   // dropdown
-        $table->unsignedBigInteger('lokasi_id');   // dropdown
+        $tpable->unsignedBigInteger('lokasi_id');   // dropdown
         $table->timestamps();
 
         $table->foreign('jenis_id')->references('id')->on('jenis')->onDelete('cascade');

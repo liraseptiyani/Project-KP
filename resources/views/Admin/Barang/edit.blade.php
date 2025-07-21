@@ -80,11 +80,6 @@
         @method('PUT')
 
         <div class="form-group">
-            <label>Kode Barang</label>
-            <input type="text" name="kode_barang" value="{{ $barang->kode_barang }}" readonly>
-        </div>
-
-        <div class="form-group">
             <label>Seri Barang</label>
             <input type="text" name="seri_barang" value="{{ $barang->seri_barang }}" readonly>
         </div>

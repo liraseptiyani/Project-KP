@@ -87,24 +87,21 @@
     <form action="{{ route('barang.store') }}" method="POST">
         @csrf
 
+
+
         <div class="form-group">
-            <label>Kode Barang</label>
-            <input type="text" name="kode_barang" value="{{ $kodeBarang }}" readonly>
+            <label>Jenis</label>
+            <select name="jenis_id" id="jenis_id" required onchange="generateSeri()">
+                <option value="">-- Pilih Jenis --</option>
+                @foreach ($jenisList as $jenis)
+                    <option value="{{ $jenis->id }}" data-prefix="{{ $jenis->prefix }}">{{ $jenis->nama_jenis }}</option>
+                @endforeach
+            </select>
         </div>
 
         <div class="form-group">
             <label>Seri Barang</label>
-            <input type="text" name="seri_barang" value="{{ $seriBarang }}" readonly>
-        </div>
-
-        <div class="form-group">
-            <label>Jenis</label>
-            <select name="jenis_id" required>
-                <option value="">-- Pilih Jenis --</option>
-                @foreach ($jenisList as $jenis)
-                    <option value="{{ $jenis->id }}">{{ $jenis->nama_jenis }}</option>
-                @endforeach
-            </select>
+            <input type="text" name="seri_barang" id="seri_barang" value="{{ $seriBarang }}" readonly>
         </div>
 
         <div class="form-group">
@@ -134,3 +131,24 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function generateSeri() {
+        const jenisSelect = document.getElementById('jenis_id');
+        const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
+        const prefix = selectedOption.getAttribute('data-prefix');
+
+        if (!prefix) return;
+
+        fetch(`/barang/generate-seri/${prefix}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('seri_barang').value = data.seri_barang;
+            })
+            .catch(error => {
+                console.error('Gagal mengambil seri barang:', error);
+            });
+    }
+</script>
+@endpush

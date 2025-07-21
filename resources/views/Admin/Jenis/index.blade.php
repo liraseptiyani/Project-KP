@@ -74,7 +74,6 @@
         background-color: #B71C1C;
     }
 
-    /* Modal Tambah */
     .modal {
         display: none;
         position: fixed;
@@ -179,7 +178,7 @@
         <tr>
             <th>No</th>
             <th>Jenis</th>
-            <th>Keterangan</th>
+            <th>Prefix</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -188,7 +187,7 @@
         <tr>
             <td style="text-align:center;">{{ $index + 1 }}</td>
             <td>{{ $jenis->nama_jenis }}</td>
-            <td>{{ $jenis->keterangan }}</td>
+            <td>{{ $jenis->prefix }}</td>
             <td class="actions">
                 <form action="{{ route('jenis.edit', $jenis->id) }}" method="GET" style="display:inline;">
                     <button type="submit" class="btn-edit">Edit</button>
@@ -212,8 +211,8 @@
                 <input type="text" id="nama_jenis" name="nama_jenis" required>
             </div>
             <div class="form-group">
-                <label for="keterangan">Keterangan *</label>
-                <textarea id="keterangan" name="keterangan" required></textarea>
+                <label for="prefix">Prefix *</label>
+                <input type="text" id="prefix" name="prefix" required>
             </div>
             <div class="modal-buttons">
                 <button type="submit" class="btn btn-success">Simpan</button>

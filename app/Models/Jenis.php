@@ -11,6 +11,7 @@ class Jenis extends Model
 
     protected $fillable = [
         'nama_jenis',
+        'prefix',       // ✅ Tambahkan ini!
         'keterangan',
     ];
 }

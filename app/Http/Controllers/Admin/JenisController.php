@@ -21,7 +21,14 @@ class JenisController extends Controller
 
     public function store(Request $request)
     {
-        Jenis::create($request->only(['nama_jenis', 'keterangan']));
+        $request->validate([
+            'nama_jenis' => 'required|string|max:100',
+            'prefix' => 'required|string|max:5',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        Jenis::create($request->only(['nama_jenis', 'prefix', 'keterangan']));
+
         return redirect()->route('jenis.index')->with('success', 'Data berhasil ditambahkan.');
     }
 
@@ -33,7 +40,14 @@ class JenisController extends Controller
 
     public function update(Request $request, $id)
     {
-        Jenis::findOrFail($id)->update($request->only(['nama_jenis', 'keterangan']));
+        $request->validate([
+            'nama_jenis' => 'required|string|max:100',
+            'prefix' => 'required|string|max:5',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        Jenis::findOrFail($id)->update($request->only(['nama_jenis', 'prefix', 'keterangan']));
+
         return redirect()->route('jenis.index')->with('success', 'Data berhasil diupdate.');
     }
 
