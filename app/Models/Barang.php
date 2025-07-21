@@ -9,6 +9,9 @@ class Barang extends Model
 {
     use HasFactory;
 
+     // Nama tabel custom jika bukan "barangs" (default Laravel)
+    protected $table = 'barangs';
+    
     protected $fillable = [
         'kode_barang',
         'seri_barang',
