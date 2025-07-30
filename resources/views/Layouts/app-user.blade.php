@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'Divisi | Pengajuan Barang')</title>
+    <title>@yield('title', 'Aplikasi User')</title>
 
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f4f6f9;
         }
 
@@ -27,8 +27,8 @@
             width: 100%;
             z-index: 1000;
             justify-content: space-between;
-            box-sizing: border-box;
             height: 70px;
+            box-sizing: border-box;
         }
 
         .topbar .left {
@@ -44,7 +44,8 @@
         .topbar h1 {
             font-size: 20px;
             margin: 0;
-            font-weight: normal;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
         .user-role-container {
@@ -59,15 +60,23 @@
         .user-role {
             background-color: white;
             color: #388E3C;
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 30px;
             font-weight: bold;
             font-size: 14px;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        .user-role i {
+            font-size: 12px;
+            position: relative;
+            top: -1px;
         }
 
         .dropdown-content {
@@ -75,18 +84,21 @@
             position: absolute;
             right: 0;
             background-color: white;
-            min-width: 140px;
+            width: 100%;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-            border-radius: 5px;
+            border-radius: 20px;
             z-index: 1001;
+            overflow: hidden;
         }
 
         .dropdown-content a {
             color: #388E3C;
-            padding: 10px 16px;
+            padding: 6px 12px;
             text-decoration: none;
             display: block;
             font-weight: bold;
+            text-align: center;
+            font-size: 14px;
         }
 
         .dropdown-content a:hover {
@@ -106,7 +118,6 @@
             background-color: #2E7D32;
             padding-top: 20px;
             color: white;
-            box-sizing: border-box;
             overflow-y: auto;
         }
 
@@ -132,36 +143,48 @@
 
         .content {
             margin-left: 220px;
-            padding: 85px 30px 30px 30px;
+            padding: 85px 30px 30px;
             box-sizing: border-box;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
-                padding-top: 10px;
-            }
-            .sidebar ul li a {
-                padding: 12px 10px;
-                font-size: 12px;
-                text-align: center;
-            }
-            .sidebar ul li a span {
-                display: none;
-            }
-            .content {
-                margin-left: 60px;
-                padding: 85px 15px 15px 15px;
-            }
+        #logoutModal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
         }
 
-        @media (max-width: 480px) {
-            .topbar h1 {
-                font-size: 16px;
-            }
-            .topbar img {
-                height: 30px;
-            }
+        #logoutModal .modal-content {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #logoutModal button {
+            margin: 5px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #logoutModal .yes-btn {
+            background-color: #388E3C;
+            color: white;
+        }
+
+        #logoutModal .no-btn {
+            background-color: #ccc;
+            color: black;
         }
     </style>
 
@@ -177,11 +200,11 @@
     <div class="user-role-container">
         <div class="dropdown" id="userDropdown">
             <button class="user-role" id="userRoleBtn">
-                Divisi {{ Auth::user()->username }} <i class="fas fa-caret-down"></i>
+                {{ Auth::user()->username ?? 'Guest' }}
+                <i class="fas fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="dropdownContent">
-                <a href="{{ route('logout') }}"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
+                <a href="#" onclick="event.preventDefault(); openLogoutModal();">Keluar</a>
             </div>
         </div>
     </div>
@@ -191,10 +214,19 @@
     @csrf
 </form>
 
+<!-- Modal Logout -->
+<div id="logoutModal">
+    <div class="modal-content">
+        <p style="font-weight: bold; margin-bottom: 20px;">Apakah Anda yakin ingin keluar?</p>
+        <button class="yes-btn" onclick="confirmLogout()">Yes</button>
+        <button class="no-btn" onclick="closeLogoutModal()">No</button>
+    </div>
+</div>
+
 <aside class="sidebar">
     <ul>
         <li class="{{ request()->routeIs('pengajuan.index') ? 'active' : '' }}">
-            <a href="{{ route('pengajuan.index') }}"><span>Pengajuan Barang</span></a>
+            <a href="{{ route('pengajuan.index') }}"><span>Pengajuan</span></a>
         </li>
     </ul>
 </aside>
@@ -215,6 +247,18 @@
     document.addEventListener('click', () => {
         dropdown.classList.remove('show');
     });
+
+    function openLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    function confirmLogout() {
+        document.getElementById('logout-form').submit();
+    }
 </script>
 
 @stack('scripts')

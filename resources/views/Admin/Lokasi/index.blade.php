@@ -3,6 +3,9 @@
 @section('title', 'Data Lokasi')
 
 @push('styles')
+<!-- Bootstrap Icons CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
     .btn-tambah {
         background-color: #388E3C;
@@ -44,18 +47,20 @@
     }
 
     .btn-edit, .btn-hapus {
-        width: 70px;
-        padding: 5px 0;
-        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
         border: none;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 18px;
         cursor: pointer;
         color: white;
-        text-decoration: none;
         margin: 2px;
-        display: inline-block;
-        text-align: center;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        text-decoration: none;
     }
 
     .btn-edit {
@@ -187,11 +192,13 @@
             <td style="text-align:center;">{{ $index + 1 }}</td>
             <td>{{ $lokasi->lokasi }}</td>
             <td class="actions">
-                <form action="{{ route('lokasi.edit', $lokasi->id) }}" method="GET" style="display:inline;">
-                    <button type="submit" class="btn-edit">Edit</button>
-                </form>
+                <a href="{{ route('lokasi.edit', $lokasi->id) }}" class="btn-edit" title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
 
-                <button type="button" class="btn-hapus" onclick="showDeleteModal({{ $lokasi->id }})">Hapus</button>
+                <button type="button" class="btn-hapus" onclick="showDeleteModal({{ $lokasi->id }})" title="Hapus">
+                    <i class="bi bi-trash"></i>
+                </button>
 
                 <form id="delete-form-{{ $lokasi->id }}" action="{{ route('lokasi.destroy', $lokasi->id) }}" method="POST" style="display: none;">
                     @csrf

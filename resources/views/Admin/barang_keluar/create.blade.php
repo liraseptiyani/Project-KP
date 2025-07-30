@@ -28,6 +28,7 @@
         display: block;
         margin-bottom: 5px;
         color: #333;
+        text-align: left; /* tetap rata kiri */
     }
 
     .form-group input,
@@ -38,6 +39,13 @@
         border-radius: 5px;
         font-size: 14px;
         box-sizing: border-box;
+    }
+
+    /* Pusatkan kamera QR saja */
+    .qr-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
     }
 
     .button-group {
@@ -90,7 +98,10 @@
 
         <div class="form-group">
             <label>Scan QR Barang</label>
-            <div id="reader" style="width: 300px;"></div>
+            {{-- Kamera dipusatkan --}}
+            <div class="qr-wrapper">
+                <div id="reader" style="width: 300px;"></div>
+            </div>
         </div>
 
         <input type="hidden" name="barang_id" id="barang_id" required>
@@ -137,7 +148,7 @@
 
         <div class="button-group">
             <button type="submit" class="btn-simpan">Simpan</button>
-            <a href="{{ route('barang-keluar.index') }}" class="btn-batal">Batal</a>
+            <a href="{{ route('barang-keluar.index') }}" class="btn-batal">Tutup</a>
         </div>
     </form>
 </div>

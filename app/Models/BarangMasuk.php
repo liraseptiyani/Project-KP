@@ -8,10 +8,17 @@ class BarangMasuk extends Model
 {
     protected $table = 'barang_masuk';
 
-    protected $fillable = ['barang_id', 'jumlah', 'tanggal_masuk'];
+   protected $fillable = ['barang_id', 'jenis_id', 'jumlah', 'tanggal_masuk', 'lampiran'];
 
     public function barang()
-    {
-        return $this->belongsTo(Barang::class);
-    }
+{
+    return $this->belongsTo(Barang::class);
+}
+
+    public function jenis()
+{
+    return $this->belongsTo(Jenis::class);
+}
+
+
 }

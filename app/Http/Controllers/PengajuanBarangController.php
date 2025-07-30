@@ -10,11 +10,14 @@ class PengajuanBarangController extends Controller
 {
     public function index()
     {
-        // Menampilkan hanya pengajuan berdasarkan divisi (dari username user login)
-        $pengajuans = PengajuanBarang::where('divisi', auth()->user()->username)->get();
+    // Menampilkan pengajuan milik user login, urut dari yang terbaru
+    $pengajuans = PengajuanBarang::where('divisi', auth()->user()->username)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
-        return view('user.pengajuan.index', compact('pengajuans'));
+    return view('user.pengajuan.index', compact('pengajuans'));
     }
+
 
     private function generateIdPeminjaman()
     {
@@ -68,8 +71,8 @@ class PengajuanBarangController extends Controller
     {
         $request->validate([
             'nama_peminjam' => 'required|string|max:255',
-            'tanggal_peminjaman' => 'required|date_format:d/m/Y',
-            'tanggal_pengembalian' => 'required|date_format:d/m/Y|after_or_equal:tanggal_peminjaman',
+            'tanggal_peminjaman' => 'required|date',
+            'tanggal_pengembalian' => 'required|date|after_or_equal:tanggal_peminjaman',
             'nama_barang' => 'required|string|max:255',
             'jumlah_barang' => 'required|integer|min:1',
         ]);
@@ -77,8 +80,8 @@ class PengajuanBarangController extends Controller
         $pengajuan = PengajuanBarang::findOrFail($id);
 
         $pengajuan->nama_peminjam = $request->nama_peminjam;
-        $pengajuan->tanggal_peminjaman = \Carbon\Carbon::createFromFormat('d/m/Y', $request->tanggal_peminjaman)->format('Y-m-d');
-        $pengajuan->tanggal_pengembalian = \Carbon\Carbon::createFromFormat('d/m/Y', $request->tanggal_pengembalian)->format('Y-m-d');
+        $pengajuan->tanggal_peminjaman = $request->tanggal_peminjaman;
+        $pengajuan->tanggal_pengembalian = $request->tanggal_pengembalian;
         $pengajuan->nama_barang = $request->nama_barang;
         $pengajuan->jumlah_barang = $request->jumlah_barang;
 
@@ -86,6 +89,7 @@ class PengajuanBarangController extends Controller
 
         return redirect()->route('pengajuan.index')->with('success', 'Data berhasil diperbarui.');
     }
+
 
     public function destroy($id)
     {

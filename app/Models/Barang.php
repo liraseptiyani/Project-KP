@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Barang extends Model
 {
+
+    
     use HasFactory;
 
     protected $table = 'barangs';
@@ -23,9 +25,10 @@ class Barang extends Model
 
     // Relasi ke Jenis
     public function jenis()
-    {
-        return $this->belongsTo(Jenis::class, 'jenis_id');
-    }
+{
+    return $this->belongsTo(Jenis::class);
+}
+
 
     // Relasi ke Satuan
     public function satuan()
@@ -38,4 +41,9 @@ class Barang extends Model
     {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
+
+    public function barangMasuk()
+{
+    return $this->hasOne(BarangMasuk::class);
+}
 }

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - LOGISTA</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * {
@@ -174,19 +175,26 @@
       <form method="POST" action="{{ route('login') }}" class="login-form">
         @csrf
         <div class="input-group">
-          <label for="username">User name</label>
+          <label for="username">Username</label>
           <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus value="{{ old('username') }}">
           @error('username')
             <div class="error">{{ $message }}</div>
           @enderror
         </div>
 
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
-          @error('password')
-            <div class="error">{{ $message }}</div>
-          @enderror
+        <div class="input-group" style="position: relative;">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <!-- Ikon mata -->
+            <span onclick="togglePasswordVisibility()" 
+                  style="position: absolute; right: 10px; bottom: 9px; cursor: pointer;">
+                <i id="eyeIcon" class="fa fa-eye" style="font-size: 16px; color: #666;"></i>
+            </span>
+
+            @error('password')
+                <div class="error">{{ $message }}</div>
+            @enderror
         </div>
 
         <button type="submit" class="login-button">Login</button>
@@ -195,3 +203,20 @@
   </div>
 </body>
 </html>
+
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("password");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        }
+    }
+</script>

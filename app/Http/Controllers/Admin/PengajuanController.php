@@ -3,115 +3,46 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PengajuanBarang;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Models\PengajuanBarang;
 
 class PengajuanController extends Controller
 {
+
     public function index()
     {
-        // Jika admin, tampilkan semua pengajuan
-        if (auth()->user()->role === 'admin') {
-            $pengajuans = PengajuanBarang::all();
-        } else {
-            // Jika user, tampilkan hanya milik sendiri
-            $pengajuans = PengajuanBarang::where('user_id', auth()->id())->get();
-        }
+        // Ambil semua pengajuan dari user
+        $pengajuan = PengajuanBarang::orderBy('created_at', 'desc')->get();
 
-        return view(auth()->user()->role === 'admin' ? 'admin.pengajuan.index' : 'pengajuan.index', compact('pengajuans'));
+        return view('admin.pengajuan.index', compact('pengajuan'));
     }
 
-    public function store(Request $request)
+    public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'tanggal_peminjaman' => 'required|date',
-            'tanggal_pengembalian' => 'required|date|after_or_equal:tanggal_peminjaman',
-            'nama_peminjam' => 'required|string|max:100',
-            'nama_barang' => 'required|string',
-            'jumlah_barang' => 'required|integer|min:1',
+            'status' => 'required|in:menunggu,disetujui,ditolak',
         ]);
 
-        PengajuanBarang::create([
-            'id_peminjaman' => 'PGM-' . strtoupper(Str::random(6)),
-            'tanggal_peminjaman' => $request->tanggal_peminjaman,
-            'tanggal_pengembalian' => $request->tanggal_pengembalian,
-            'nama_peminjam' => $request->nama_peminjam,
-            'divisi' => auth()->user()->username,
-            'nama_barang' => $request->nama_barang,
-            'jumlah_barang' => $request->jumlah_barang,
-            'user_id' => auth()->id(),
-            'status' => 'menunggu'
-        ]);
+        $pengajuan = PengajuanBarang::findOrFail($id);
+        $pengajuan->status = $request->status;
+        $pengajuan->catatan = $request->catatan; // catatan opsional dari admin
+        $pengajuan->save();
 
-        return back()->with('success', 'Pengajuan berhasil dikirim.');
+        return redirect()->back()->with('success', 'Status pengajuan berhasil diperbarui.');
     }
 
-    public function edit($id)
+    public function verifikasi(Request $request, $id)
     {
-        $pengajuan = PengajuanBarang::findOrFail($id);
-
-        if (auth()->user()->role === 'admin') {
-            return view('admin.pengajuan.edit', compact('pengajuan'));
-        }
-
-        if ($pengajuan->user_id !== auth()->id() || $pengajuan->status !== 'menunggu') {
-            abort(403);
-        }
-
-        return view('pengajuan.edit', compact('pengajuan'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $pengajuan = PengajuanBarang::findOrFail($id);
-
-        if (auth()->user()->role === 'admin') {
-            $request->validate([
-                'status' => 'required|in:menunggu,diterima,ditolak',
-                'catatan' => 'nullable|string',
-            ]);
-
-            $pengajuan->update([
-                'status' => $request->status,
-                'catatan' => $request->catatan,
-            ]);
-
-            return redirect()->route('admin.pengajuan.index')->with('success', 'Pengajuan diperbarui.');
-        }
-
-        if ($pengajuan->user_id !== auth()->id() || $pengajuan->status !== 'menunggu') {
-            abort(403);
-        }
-
         $request->validate([
-            'tanggal_peminjaman' => 'required|date',
-            'tanggal_pengembalian' => 'required|date|after_or_equal:tanggal_peminjaman',
-            'nama_peminjam' => 'required|string|max:100',
-            'nama_barang' => 'required|string',
-            'jumlah_barang' => 'required|integer|min:1',
+            'status' => 'required|in:disetujui,ditolak',
+            'catatan' => 'nullable|string',
         ]);
 
-        $pengajuan->update([
-            'tanggal_peminjaman' => $request->tanggal_peminjaman,
-            'tanggal_pengembalian' => $request->tanggal_pengembalian,
-            'nama_peminjam' => $request->nama_peminjam,
-            'nama_barang' => $request->nama_barang,
-            'jumlah_barang' => $request->jumlah_barang,
-        ]);
-
-        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil diubah.');
-    }
-
-    public function destroy($id)
-    {
         $pengajuan = PengajuanBarang::findOrFail($id);
+        $pengajuan->status = $request->status;
+        $pengajuan->catatan = $request->catatan;
+        $pengajuan->save();
 
-        if (auth()->user()->role !== 'admin' && ($pengajuan->user_id !== auth()->id() || $pengajuan->status !== 'menunggu')) {
-            abort(403);
-        }
-
-        $pengajuan->delete();
-        return back()->with('success', 'Pengajuan berhasil dihapus.');
+        return redirect()->back()->with('success', 'Status pengajuan berhasil diperbarui.');
     }
 }

@@ -87,21 +87,21 @@
     <form action="{{ route('barang.store') }}" method="POST">
         @csrf
 
-
-
         <div class="form-group">
             <label>Jenis</label>
             <select name="jenis_id" id="jenis_id" required onchange="generateSeri()">
                 <option value="">-- Pilih Jenis --</option>
                 @foreach ($jenisList as $jenis)
-                    <option value="{{ $jenis->id }}" data-prefix="{{ $jenis->prefix }}">{{ $jenis->nama_jenis }}</option>
+                    <option value="{{ $jenis->id }}" data-prefix="{{ $jenis->prefix }}">
+                        {{ $jenis->nama_jenis }}
+                    </option>
                 @endforeach
             </select>
         </div>
 
         <div class="form-group">
             <label>Seri Barang</label>
-            <input type="text" name="seri_barang" id="seri_barang" value="{{ $seriBarang }}" readonly>
+            <input type="text" name="seri_barang" id="seri_barang" value="{{ old('seri_barang') }}" readonly required>
         </div>
 
         <div class="form-group">

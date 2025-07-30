@@ -3,6 +3,8 @@
 @section('title', 'Data Satuan Barang')
 
 @push('styles')
+<!-- CDN Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     .btn-tambah {
         background-color: #388E3C;
@@ -44,24 +46,25 @@
     }
 
     .btn-edit, .btn-hapus {
-        width: 70px;
-        padding: 5px 0;
-        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
         border: none;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 18px;
         cursor: pointer;
         color: white;
-        text-decoration: none;
         margin: 2px;
-        display: inline-block;
-        text-align: center;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        text-decoration: none;
     }
 
     .btn-edit {
         background-color: #1976D2;
     }
-
     .btn-edit:hover {
         background-color: #1565C0;
     }
@@ -69,7 +72,6 @@
     .btn-hapus {
         background-color: #D32F2F;
     }
-
     .btn-hapus:hover {
         background-color: #B71C1C;
     }
@@ -190,13 +192,15 @@
             <td>{{ $satuan->satuan }}</td>
             <td>{{ $satuan->keterangan }}</td>
             <td class="actions">
-                <form action="{{ route('satuan.edit', $satuan->id) }}" method="GET" style="display:inline;">
-                    <button type="submit" class="btn-edit">Edit</button>
-                </form>
+                <a href="{{ route('satuan.edit', $satuan->id) }}" class="btn-edit" title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
                 <form action="{{ route('satuan.destroy', $satuan->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn-hapus" onclick="return confirm('Yakin hapus data ini?')">Hapus</button>
+                    <button type="button" class="btn-hapus" onclick="confirmDelete({{ $satuan->id }})" title="Hapus">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </form>
             </td>
         </tr>
@@ -226,6 +230,21 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Hapus -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3>Apakah anda yakin ingin menghapus data ini?</h3>
+        <form id="deleteForm" method="POST">
+            @csrf
+            @method('DELETE')
+            <div class="modal-buttons">
+                <button type="submit" class="btn btn-success">Ya</button>
+                <button type="button" class="btn btn-danger" onclick="closeDeleteModal()">Tidak</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -236,6 +255,16 @@
 
     function closeModal() {
         document.getElementById('tambahModal').style.display = 'none';
+    }
+
+        function confirmDelete(id) {
+        const form = document.getElementById('deleteForm');
+        form.action = `/satuan/${id}`;
+        document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
     }
 
     window.onclick = function(event) {

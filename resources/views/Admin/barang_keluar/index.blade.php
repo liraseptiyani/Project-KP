@@ -3,22 +3,44 @@
 @section('title', 'Barang Keluar')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 <style>
     .btn-tambah {
         background-color: #388E3C;
         color: white;
         font-weight: bold;
-        padding: 8px 16px;
+        padding: 8px 14px;
         border-radius: 5px;
         text-decoration: none;
         border: none;
-        float: right;
-        margin-bottom: 15px;
-        transition: background-color 0.3s;
+        font-size: 14px;
+        cursor: pointer;
     }
 
     .btn-tambah:hover {
         background-color: #2e7d32;
+    }
+
+    .btn-export {
+        background-color: #D32F2F;
+        color: white;
+        font-weight: bold;
+        padding: 8px 14px;
+        border-radius: 5px;
+        border: none;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-export:hover {
+        background-color: #B71C1C;
+    }
+
+    .btn-export i {
+        margin-right: 6px;
     }
 
     table {
@@ -28,34 +50,31 @@
     }
 
     th, td {
-        padding: 12px;
+        padding: 10px;
         border: 1px solid #ddd;
+        font-size: 14px;
+        text-align: center;
     }
 
     th {
         background-color: #388E3C;
         color: white;
-        text-align: center;
-    }
-
-    td.actions {
-        text-align: center;
-        vertical-align: middle;
     }
 
     .btn-edit, .btn-hapus {
-        width: 70px;
-        padding: 5px 0;
-        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
         border: none;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 18px;
         cursor: pointer;
         color: white;
-        text-decoration: none;
         margin: 2px;
-        display: inline-block;
-        text-align: center;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
 
     .btn-edit {
@@ -74,6 +93,13 @@
         background-color: #B71C1C;
     }
 
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    /* Modal */
     .modal {
         display: none;
         position: fixed;
@@ -93,48 +119,46 @@
         border: 1px solid #ccc;
         width: 400px;
         border-radius: 8px;
-        position: relative;
+        text-align: center;
     }
 
     .modal-content h3 {
         margin-top: 0;
         color: #388E3C;
-        text-align: center;
+        margin-bottom: 20px;
     }
 
     .modal-buttons {
-        margin-top: 20px;
         display: flex;
         justify-content: center;
         gap: 12px;
     }
 
     .modal-buttons .btn {
-        width: 120px;
-        padding: 10px;
+        width: 100px;
+        padding: 8px 12px;
         font-weight: bold;
         border: none;
         border-radius: 5px;
         color: white;
         cursor: pointer;
-        transition: 0.2s;
-        text-align: center;
+        font-size: 14px;
     }
 
-    .modal-buttons .btn-success {
+    .btn-success {
         background-color: #388E3C;
     }
 
-    .modal-buttons .btn-success:hover {
-        background-color: #2e7d32;
-    }
-
-    .modal-buttons .btn-danger {
+    .btn-danger {
         background-color: #D32F2F;
     }
 
-    .modal-buttons .btn-danger:hover {
-        background-color: #B71C1C;
+    .btn-success:hover {
+        background-color: #2e7d32;
+    }
+
+    .btn-danger:hover {
+        background-color: #b71c1c;
     }
 </style>
 @endpush
@@ -142,7 +166,14 @@
 @section('content')
 <h2>Data Barang Keluar</h2>
 
-<a href="{{ route('barang-keluar.create') }}" class="btn-tambah">+ Tambah Barang Keluar</a>
+<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+    <a href="{{ route('barang-keluar.export.pdf') }}" class="btn-export">
+        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+    </a>
+    <a href="{{ route('barang-keluar.create') }}" class="btn-tambah">
+        + Tambah Barang Keluar
+    </a>
+</div>
 
 <table>
     <thead>
@@ -155,13 +186,13 @@
             <th>Nama Peminjam</th>
             <th>Tanggal Pengembalian</th>
             <th>Status</th>
-            <th>Action</th>
+            <th>Aksi</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($barangKeluarList as $index => $barang)
         <tr>
-            <td style="text-align: center;">{{ $index + 1 }}</td>
+            <td>{{ $index + 1 }}</td>
             <td>{{ $barang->barang->seri_barang ?? '-' }}</td>
             <td>{{ $barang->barang->jenis->nama_jenis ?? '-' }}</td>
             <td>{{ $barang->barang->satuan->satuan ?? '-' }}</td>
@@ -170,14 +201,19 @@
             <td>{{ $barang->tanggal_pengembalian }}</td>
             <td>{{ ucfirst($barang->status) }}</td>
             <td class="actions">
-    <div style="display: flex; justify-content: center; gap: 6px;">
-        <form action="{{ route('barang-keluar.edit', $barang->id) }}" method="GET">
-            <button type="submit" class="btn-edit">Edit</button>
-        </form>
-        <button type="button" class="btn-hapus" onclick="confirmDelete('{{ $barang->id }}')">Hapus</button>
-    </div>
-</td>
-
+                <div class="action-buttons">
+                    <a href="{{ route('barang-keluar.edit', $barang->id) }}" class="btn-edit" title="Edit">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <button class="btn-hapus" onclick="showDeleteModal({{ $barang->id }})" title="Hapus">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <form id="delete-form-{{ $barang->id }}" action="{{ route('barang-keluar.destroy', $barang->id) }}" method="POST" style="display:none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                </div>
+            </td>
         </tr>
         @endforeach
     </tbody>
@@ -186,35 +222,39 @@
 <!-- Modal Hapus -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
-        <h3>Apakah anda yakin ingin menghapus data ini?</h3>
-        <form id="deleteForm" method="POST">
-            @csrf
-            @method('DELETE')
-            <div class="modal-buttons">
-                <button type="submit" class="btn btn-success">Ya</button>
-                <button type="button" class="btn btn-danger" onclick="closeDeleteModal()">Tidak</button>
-            </div>
-        </form>
+        <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
+        <div class="modal-buttons">
+            <button class="btn btn-success" onclick="confirmDelete()">Ya</button>
+            <button class="btn btn-danger" onclick="closeDeleteModal()">Tidak</button>
+        </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    function confirmDelete(id) {
-        const form = document.getElementById('deleteForm');
-        form.action = `/barang-keluar/${id}`;
+    let deleteId = null;
+
+    function showDeleteModal(id) {
+        deleteId = id;
         document.getElementById('deleteModal').style.display = 'block';
     }
 
     function closeDeleteModal() {
         document.getElementById('deleteModal').style.display = 'none';
+        deleteId = null;
+    }
+
+    function confirmDelete() {
+        if (deleteId !== null) {
+            document.getElementById('delete-form-' + deleteId).submit();
+        }
     }
 
     window.onclick = function(event) {
-        const deleteModal = document.getElementById('deleteModal');
-        if (event.target == deleteModal) {
-            deleteModal.style.display = 'none';
+        const modal = document.getElementById('deleteModal');
+        if (event.target === modal) {
+            closeDeleteModal();
         }
     }
 </script>

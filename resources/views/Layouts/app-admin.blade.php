@@ -144,10 +144,6 @@
             background-color: #1B5E20;
         }
 
-        .sidebar ul li.dropdown-menu > a {
-            cursor: pointer;
-        }
-
         .sidebar ul li ul.submenu {
             display: none;
             background-color: #388e3c;
@@ -159,6 +155,13 @@
 
         .sidebar ul li.dropdown-menu.open ul.submenu {
             display: block;
+        }
+
+        .sidebar ul li.dropdown-menu > a .menu-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         .content {
@@ -243,16 +246,22 @@
     </div>
 </div>
 
+{{-- SIDEBAR --}}
 <aside class="sidebar">
     <ul>
         <li class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-    <a href="{{ route('admin.dashboard') }}"><span>Dashboard</span></a>
-</li>
+            <a href="{{ route('admin.dashboard') }}"><span>Dashboard</span></a>
+        </li>
 
-        <li class="dropdown-menu {{ request()->is('jenis*') || request()->is('satuan*') || request()->is('lokasi*') || request()->is('barang*') ? 'open' : '' }}">
-            <a href="javascript:void(0)" onclick="toggleDropdown(this)" style="display: flex; align-items: center; gap: 8px;">
-                <span>Master Barang</span>
-                <i class="fas fa-caret-down arrow"></i>
+        @php
+            $masterBarangActive = request()->routeIs('jenis.*') || request()->routeIs('satuan.*') || request()->routeIs('lokasi.*') || request()->routeIs('barang.index');
+        @endphp
+        <li class="dropdown-menu {{ $masterBarangActive ? 'open' : '' }}">
+            <a href="javascript:void(0)" onclick="toggleDropdown(this)">
+                <div class="menu-label">
+                    <span>Master Barang</span>
+                    <i class="fas fa-caret-down arrow {{ $masterBarangActive ? 'rotate-down' : '' }}"></i>
+                </div>
             </a>
             <ul class="submenu">
                 <li><a href="{{ route('jenis.index') }}">Jenis</a></li>
@@ -262,17 +271,16 @@
             </ul>
         </li>
 
-
-        <li class="{{ request()->routeIs('barangmasuk.index') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('barang-masuk.index') ? 'active' : '' }}">
             <a href="{{ route('barang-masuk.index') }}"><span>Barang Masuk</span></a>
         </li>
-        <li class="{{ request()->routeIs('barangkeluar.index') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('barang-keluar.index') ? 'active' : '' }}">
             <a href="{{ route('barang-keluar.index') }}"><span>Barang Keluar</span></a>
         </li>
         <li class="{{ request()->routeIs('databarang.index') ? 'active' : '' }}">
             <a href="{{ route('databarang.index') }}"><span>Data Barang</span></a>
         </li>
-        <li class="{{ request()->routeIs('pengajuan.index') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('admin.pengajuan.index') ? 'active' : '' }}">
             <a href="{{ route('admin.pengajuan.index') }}"><span>Pengajuan</span></a>
         </li>
     </ul>
@@ -316,6 +324,5 @@
 </script>
 
 @stack('scripts')
-
 </body>
 </html>

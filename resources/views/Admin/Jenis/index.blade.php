@@ -3,6 +3,7 @@
 @section('title', 'Data Jenis Barang')
 
 @push('styles')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <style>
     .btn-tambah {
         background-color: #388E3C;
@@ -44,24 +45,25 @@
     }
 
     .btn-edit, .btn-hapus {
-        width: 70px;
-        padding: 5px 0;
-        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
         border: none;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 18px;
         cursor: pointer;
         color: white;
-        text-decoration: none;
         margin: 2px;
-        display: inline-block;
-        text-align: center;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        text-decoration: none;
     }
 
     .btn-edit {
         background-color: #1976D2;
     }
-
     .btn-edit:hover {
         background-color: #1565C0;
     }
@@ -69,7 +71,6 @@
     .btn-hapus {
         background-color: #D32F2F;
     }
-
     .btn-hapus:hover {
         background-color: #B71C1C;
     }
@@ -189,10 +190,12 @@
             <td>{{ $jenis->nama_jenis }}</td>
             <td>{{ $jenis->prefix }}</td>
             <td class="actions">
-                <form action="{{ route('jenis.edit', $jenis->id) }}" method="GET" style="display:inline;">
-                    <button type="submit" class="btn-edit">Edit</button>
-                </form>
-                <button type="button" class="btn-hapus" onclick="confirmDelete('{{ $jenis->id }}')">Hapus</button>
+                <a href="{{ route('jenis.edit', $jenis->id) }}" class="btn-edit" title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <button type="button" class="btn-hapus" onclick="confirmDelete('{{ $jenis->id }}')" title="Hapus">
+                    <i class="bi bi-trash"></i>
+                </button>
             </td>
         </tr>
         @endforeach

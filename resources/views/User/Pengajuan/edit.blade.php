@@ -39,30 +39,40 @@
         font-size: 14px;
     }
 
+    /* Tombol simpan dan batal sejajar dan seragam */
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-simpan, .btn-batal {
+        width: 120px;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 14px;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
     .btn-simpan {
         background-color: #388E3C;
         color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-right: 10px;
+    }
+
+    .btn-simpan:hover {
+        background-color: #2e7d32;
     }
 
     .btn-batal {
         background-color: #D32F2F;
         color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
         text-decoration: none;
-    }
-
-    .btn-simpan:hover {
-        background-color: #2e7d32;
+        display: inline-block;
     }
 
     .btn-batal:hover {
@@ -103,8 +113,10 @@
             <input type="number" name="jumlah_barang" value="{{ old('jumlah_barang', $pengajuan->jumlah_barang) }}" required>
         </div>
 
-        <button type="submit" class="btn-simpan">Update</button>
-        <a href="{{ route('pengajuan.index') }}" class="btn-batal">Batal</a>
+        <div class="button-group">
+            <button type="submit" class="btn-simpan">Update</button>
+            <a href="{{ route('pengajuan.index') }}" class="btn-batal">Batal</a>
+        </div>
     </form>
 </div>
 @endsection

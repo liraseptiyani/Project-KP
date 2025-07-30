@@ -1,64 +1,82 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.app-admin')
 
 @section('title', 'Barang Masuk')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <style>
     .btn-tambah {
         background-color: #388E3C;
         color: white;
         font-weight: bold;
-        padding: 8px 16px;
+        padding: 8px 14px;
         border-radius: 5px;
         border: none;
-        float: right;
-        margin-bottom: 15px;
+        font-size: 14px;
+        text-decoration: none;
         cursor: pointer;
+        display: inline-block;
     }
 
     .btn-tambah:hover {
         background-color: #2e7d32;
     }
 
+    .btn-export-pdf {
+        background-color: #D32F2F;
+        color: white;
+        font-weight: bold;
+        padding: 8px 14px;
+        border-radius: 5px;
+        border: none;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: background-color 0.3s;
+    }
+
+    .btn-export-pdf:hover {
+        background-color: #B71C1C;
+    }
+
+    .btn-export-pdf i {
+        margin-right: 6px;
+    }
+
     table {
         width: 100%;
-        background-color: white;
         border-collapse: collapse;
-        font-family: Arial, sans-serif;
+        background-color: white;
     }
 
     th, td {
         padding: 12px;
         border: 1px solid #ddd;
+        font-size: 14px;
+        text-align: center;
     }
 
     th {
         background-color: #388E3C;
         color: white;
-        text-align: center;
-    }
-
-    td {
-        text-align: center;
-    }
-
-    td.actions {
-        text-align: center;
     }
 
     .btn-edit, .btn-hapus {
-        width: 70px;
-        padding: 5px 0;
-        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
         border: none;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 18px;
         cursor: pointer;
         color: white;
         margin: 2px;
         transition: background-color 0.3s;
-        display: inline-block;
-        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
 
     .btn-edit {
@@ -77,6 +95,12 @@
         background-color: #B71C1C;
     }
 
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+    }
+
     /* Modal Hapus */
     .modal {
         display: none;
@@ -86,176 +110,181 @@
         top: 0;
         width: 100%;
         height: 100%;
+        overflow: auto;
         background-color: rgba(0,0,0,0.5);
     }
 
     .modal-content {
         background-color: #fff;
-        margin: 10% auto;
-        padding: 30px;
-        border-radius: 10px;
+        margin: 8% auto;
+        padding: 20px;
+        border: 1px solid #ccc;
         width: 400px;
+        border-radius: 8px;
+        position: relative;
         text-align: center;
     }
 
     .modal-content h3 {
-        margin-bottom: 25px;
-        font-size: 18px;
-        color: #333;
+        color: #388E3C;
+        margin-bottom: 20px;
     }
 
     .modal-buttons {
         display: flex;
         justify-content: center;
-        gap: 20px;
+        gap: 12px;
     }
 
-    .modal-buttons button {
-        width: 80px;
-        padding: 8px 0;
+    .modal-buttons .btn {
+        width: 100px;
+        padding: 8px 12px;
         font-weight: bold;
-        border-radius: 5px;
         border: none;
+        border-radius: 5px;
+        color: white;
         cursor: pointer;
     }
 
-    .btn-yes {
+    .btn-success {
         background-color: #388E3C;
-        color: white;
     }
 
-    .btn-no {
-        background-color: #ccc;
-        color: #333;
+    .btn-danger {
+        background-color: #D32F2F;
+    }
+
+    .btn-success:hover {
+        background-color: #2e7d32;
+    }
+
+    .btn-danger:hover {
+        background-color: #b71c1c;
     }
 </style>
 @endpush
 
 @section('content')
-    <h2>Data Barang Masuk</h2>
+<h2>Data Barang Masuk</h2>
 
+<div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px;">
+    <a href="{{ route('barang_masuk.export_pdf') }}" class="btn-export-pdf">
+        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+    </a>
     <a href="{{ route('barang-masuk.create') }}" class="btn-tambah">+ Tambah Barang Masuk</a>
+</div>
 
-    @if(session('success'))
-        <div style="background-color:#d4edda; border:1px solid #c3e6cb; padding:10px 15px; border-radius:5px; color:#155724; margin-top: 15px; margin-bottom: 20px; text-align: center;">
-            {{ session('success') }}
-        </div>
-    @endif
+@if(session('success'))
+    <div style="background-color:#d4edda; border:1px solid #c3e6cb; padding:10px 15px; border-radius:5px; color:#155724; margin-bottom: 20px; text-align: center;">
+        {{ session('success') }}
+    </div>
+@endif
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID Barang Masuk</th>
-                <th>Jenis</th>
-                <th>Seri Barang</th>
-                <th>Satuan</th>
-                <th>Lokasi</th>
-                <th>Tanggal Masuk</th>
-                <th>QR Code</th>
-                <th>Invoice</th>
-                <th class="actions">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($barangMasuk as $bm)
-                <tr>
-                    <td>{{ $bm->id }}</td>
-                    <td>{{ $bm->barang->jenis->nama_jenis ?? '-' }}</td>
-                    <td>{{ $bm->barang->seri_barang ?? '-' }}</td>
-                    <td>{{ $bm->barang->satuan->satuan ?? '-' }}</td>
-                    <td>{{ $bm->barang->lokasi->lokasi ?? '-' }}</td>
-                    <td>{{ \Carbon\Carbon::parse($bm->tanggal_masuk)->format('d-m-Y') }}</td>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Jenis</th>
+            <th>Seri Barang</th>
+            <th>Satuan</th>
+            <th>Lokasi</th>
+            <th>Tanggal Masuk</th>
+            <th>QR Code</th>
+            <th>Invoice</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($barangMasuk as $bm)
+        <tr>
+            <td>{{ $bm->id }}</td>
+            <td>{{ $bm->barang->jenis->nama_jenis ?? '-' }}</td>
+            <td>{{ $bm->barang->seri_barang ?? '-' }}</td>
+            <td>{{ $bm->barang->satuan->satuan ?? '-' }}</td>
+            <td>{{ $bm->barang->lokasi->lokasi ?? '-' }}</td>
+            <td>{{ \Carbon\Carbon::parse($bm->tanggal_masuk)->format('d-m-Y') }}</td>
+            <td>
+                @if ($bm->barang && $bm->barang->qr_code && file_exists(public_path('storage/qr/' . $bm->barang->qr_code)))
+                    <img src="{{ asset('storage/qr/' . $bm->barang->qr_code) }}" alt="QR Code" style="width:80px; height:80px; object-fit:contain; border:1px solid #ccc; border-radius:4px;">
+                    <br>
+                    <a href="{{ asset('storage/qr/' . $bm->barang->qr_code) }}" download style="font-size:12px; color:#388E3C;">Download</a>
+                @else
+                    <span style="font-size:13px;">QR Code tidak tersedia</span>
+                @endif
+            </td>
+            <td>
+                @php $ext = pathinfo($bm->lampiran, PATHINFO_EXTENSION); @endphp
+                @if ($bm->lampiran)
+                    @if(in_array(strtolower($ext), ['jpg','jpeg','png']))
+                        <img src="{{ asset('storage/lampiran_barang_masuk/' . $bm->lampiran) }}" alt="Lampiran" style="width:80px; height:80px; object-fit:contain; border:1px solid #ccc; border-radius:4px;">
+                        <br>
+                        <a href="{{ asset('storage/lampiran_barang_masuk/' . $bm->lampiran) }}" target="_blank" style="font-size:12px; color:#388E3C;">Lihat</a>
+                    @else
+                        <a href="{{ asset('storage/lampiran_barang_masuk/' . $bm->lampiran) }}" target="_blank" style="font-size:13px; color:#388E3C;">Lihat Lampiran</a>
+                    @endif
+                @else
+                    <span style="font-size:13px;">Tidak ada lampiran</span>
+                @endif
+            </td>
+            <td class="actions">
+                <div class="action-buttons">
+                    <a href="{{ route('barang-masuk.edit', $bm->id) }}" class="btn-edit" title="Edit">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <button class="btn-hapus" onclick="showDeleteModal({{ $bm->id }})" title="Hapus">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                    <form id="delete-form-{{ $bm->id }}" action="{{ route('barang-masuk.destroy', $bm->id) }}" method="POST" style="display:none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                </div>
+            </td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="9" style="text-align:center;">Belum ada data barang masuk.</td>
+        </tr>
+        @endforelse
+    </tbody>
+</table>
 
-                    <td>
-                        @php
-                            $qrPath = Storage::url('qrcode/qrcode_barang_masuk_' . $bm->id . '.svg');
-                            $qrExists = Storage::disk('public')->exists('qrcode/qrcode_barang_masuk_' . $bm->id . '.svg');
-                        @endphp
-                        @if($qrExists)
-                            <img src="{{ $qrPath }}" alt="QR Code" style="width:80px; height:80px; object-fit:contain; border:1px solid #ccc; border-radius:4px;">
-                            <br>
-                            <a href="{{ $qrPath }}" download style="font-size:12px; color:#388E3C;">Download</a>
-                        @else
-                            <span>QR Code tidak tersedia</span>
-                        @endif
-                    </td>
-
-                    <td>
-    @php
-        $invoicePath = asset('lampiran_barang_masuk/' . $bm->lampiran);
-        $invoiceExists = $bm->lampiran && file_exists(public_path('lampiran_barang_masuk/' . $bm->lampiran));
-    @endphp
-    @if($invoiceExists)
-        @php
-            $fileExtension = pathinfo($bm->lampiran, PATHINFO_EXTENSION);
-        @endphp
-        @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
-            <img src="{{ $invoicePath }}" alt="Invoice" style="width:80px; height:80px; object-fit:contain; border:1px solid #ccc; border-radius:4px;">
-        @else
-            <img src="https://placehold.co/80x80/cccccc/333333?text=PDF" alt="PDF Icon" style="width:80px; height:80px; border-radius:4px;">
-        @endif
-        <br>
-        <a href="{{ $invoicePath }}" target="_blank" style="font-size:12px; color:#388E3C;">Lihat/Download</a>
-    @else
-        <span>Invoice tidak tersedia</span>
-    @endif
-</td>
-
-
-                    <td class="actions">
-                        <a href="{{ route('barang-masuk.edit', $bm->id) }}" class="btn-edit">Edit</a>
-                        <form action="{{ route('barang-masuk.destroy', $bm->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin hapus data ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-hapus">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="9" style="text-align:center;">Belum ada data barang masuk.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <!-- Modal Hapus jika mau dipakai -->
-    <div id="confirmDeleteModal" class="modal">
-        <div class="modal-content">
-            <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
-            <div class="modal-buttons">
-                <button class="btn-yes" onclick="confirmDelete()">Yes</button>
-                <button class="btn-no" onclick="closeConfirmModal()">No</button>
-            </div>
+<!-- Modal Hapus -->
+<div id="deleteConfirmModal" class="modal">
+    <div class="modal-content">
+        <h3>Apakah Anda yakin ingin menghapus data ini?</h3>
+        <div class="modal-buttons">
+            <button class="btn btn-success" onclick="confirmDelete()">Ya</button>
+            <button class="btn btn-danger" onclick="closeDeleteModal()">Tidak</button>
         </div>
     </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
     let deleteId = null;
 
-    function showConfirmModal(id) {
+    function showDeleteModal(id) {
         deleteId = id;
-        document.getElementById('confirmDeleteModal').style.display = 'block';
+        document.getElementById('deleteConfirmModal').style.display = 'block';
     }
 
-    function closeConfirmModal() {
-        document.getElementById('confirmDeleteModal').style.display = 'none';
+    function closeDeleteModal() {
+        document.getElementById('deleteConfirmModal').style.display = 'none';
         deleteId = null;
     }
 
     function confirmDelete() {
-        if (deleteId) {
+        if (deleteId !== null) {
             document.getElementById('delete-form-' + deleteId).submit();
         }
     }
 
-    // Tutup modal jika klik di luar kotak
     window.onclick = function(event) {
-        const modal = document.getElementById('confirmDeleteModal');
+        const modal = document.getElementById('deleteConfirmModal');
         if (event.target === modal) {
-            closeConfirmModal();
+            closeDeleteModal();
         }
     }
 </script>

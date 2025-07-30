@@ -13,4 +13,10 @@ class Jenis extends Model
         'prefix',       // ✅ Tambahkan ini!
         'keterangan',
     ];
+
+    public function dataBarang()
+{
+    return $this->hasMany(DataBarang::class, 'jenis_id');
+}
+
 }

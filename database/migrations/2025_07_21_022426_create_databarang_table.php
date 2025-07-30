@@ -9,20 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('databarang', function (Blueprint $table) {
-            $table->id(); // Ini akan membuat kolom 'id' sebagai primary key AUTO_INCREMENT
-            $table->string('jenis'); // Contoh: kolom 'jenis' (sesuai yang Anda panggil di migrasi lain)
-            $table->timestamps(); // Ini akan membuat kolom 'created_at' dan 'updated_at'
-        });
-    }
+   public function up()
+{
+    Schema::create('data_barang', function (Blueprint $table) {
+        $table->id();
+        $table->unsignedBigInteger('barang_id');
+        $table->integer('stok')->default(0);
+        $table->timestamps();
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('databarang');
-    }
+        $table->foreign('barang_id')->references('id')->on('barangs')->onDelete('cascade');
+    });
+}
+
+public function down()
+{
+    Schema::dropIfExists('data_barang');
+}
+
 };

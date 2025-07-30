@@ -13,7 +13,7 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .form-container h2 {
+    .form-container h3 {
         text-align: center;
         color: #388E3C;
         margin-bottom: 25px;
@@ -68,31 +68,43 @@
         display: inline-block;
     }
 
-    .btn-primary, .btn-secondary {
-        padding: 10px 25px;
+    /* Style untuk tombol */
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .btn-simpan {
+        background-color: #388E3C;
+        color: white;
+        border: none;
+        padding: 10px 20px;
         border-radius: 5px;
         font-weight: bold;
         cursor: pointer;
-        border: none;
-        display: inline-block;
-        text-align: center;
-        margin-right: 10px;
+        transition: 0.2s ease;
     }
 
-    .btn-primary {
-        background-color: #388E3C;
-        color: white;
-    }
-    .btn-primary:hover {
+    .btn-simpan:hover {
         background-color: #2e7d32;
     }
 
-    .btn-secondary {
-        background-color: #ccc;
-        color: #333;
+    .btn-batal {
+        background-color: #D32F2F;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        transition: 0.2s ease;
     }
-    .btn-secondary:hover {
-        background-color: #b3b3b3;
+
+    .btn-batal:hover {
+        background-color: #b71c1c;
     }
 </style>
 @endpush
@@ -100,7 +112,7 @@
 @section('content')
 
 <div class="form-container">
-    <h2>Edit Barang Masuk</h2>
+    <h3>Edit Barang Masuk</h3>
 
     <form action="{{ route('barang-masuk.update', $barangMasuk->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -120,8 +132,8 @@
         <div class="form-group">
             <label>Kode Barang</label>
             <input type="text" class="form-control-plaintext" readonly value="{{ $barangMasuk->barang->kode_barang ?? 'N/A' }}">
-            <input type="hidden" name="kode_barang" value="{{ $barangMasuk->barang->id }}">
-            @error('kode_barang')
+            <input type="hidden" name="barang_id" value="{{ $barangMasuk->barang->id }}">
+            @error('barang_id')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>
@@ -147,10 +159,9 @@
         {{-- QR Code --}}
         <div class="form-group qr-preview">
             @php
-                // Lokasi file QR code (sesuaikan dengan path penyimpanan Anda)
-                $qrFile = storage_path('app/public/qrcodes/qrcode_barang_' . $barangMasuk->barang->id . '.svg');
+                $qrFile = storage_path('app/public/qrcode/qrcode_barang_masuk_' . $barangMasuk->id . '.svg');
                 $qrExists = file_exists($qrFile);
-                $qrUrl = asset('storage/qrcodes/qrcode_barang_' . $barangMasuk->barang->id . '.svg');
+                $qrUrl = asset('storage/qrcode/qrcode_barang_masuk_' . $barangMasuk->id . '.svg');
             @endphp
             @if($qrExists)
                 <img src="{{ $qrUrl }}" alt="QR Code">
@@ -163,7 +174,7 @@
         <div class="form-group">
             <label for="lampiran">Lampiran</label>
             @if($barangMasuk->lampiran)
-                <p>File saat ini: <a href="{{ asset('lampiran_barang_masuk/' . $barangMasuk->lampiran) }}" target="_blank">{{ $barangMasuk->lampiran }}</a></p>
+                <p>File saat ini: <a href="{{ asset('storage/lampiran_barang_masuk/' . $barangMasuk->lampiran) }}" target="_blank">{{ $barangMasuk->lampiran }}</a></p>
             @endif
             <input type="file" id="lampiran" name="lampiran" accept=".jpg,.jpeg,.png,.pdf">
             <small>Biarkan kosong jika tidak ingin mengubah lampiran.</small>
@@ -172,8 +183,11 @@
             @enderror
         </div>
 
-        <button type="submit" class="btn-primary">Update Barang Masuk</button>
-        <a href="{{ route('barang-masuk.index') }}" class="btn-secondary">Batal</a>
+        {{-- Tombol simpan dan batal --}}
+        <div class="button-group">
+            <button type="submit" class="btn-simpan">Update</button>
+            <a href="{{ route('barang-masuk.index') }}" class="btn-batal">Batal</a>
+        </div>
     </form>
 </div>
 

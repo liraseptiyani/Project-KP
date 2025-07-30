@@ -40,6 +40,14 @@
         box-sizing: border-box;
     }
 
+    /* Style untuk tombol */
+    .button-group {
+        display: flex;
+        justify-content: center; /* tengah */
+        gap: 15px; /* jarak antar tombol */
+        margin-top: 20px;
+    }
+
     .btn-simpan {
         background-color: #388E3C;
         color: white;
@@ -48,7 +56,11 @@
         border-radius: 5px;
         font-weight: bold;
         cursor: pointer;
-        margin-right: 10px;
+        transition: 0.2s ease;
+    }
+
+    .btn-simpan:hover {
+        background-color: #2e7d32;
     }
 
     .btn-batal {
@@ -60,6 +72,11 @@
         font-weight: bold;
         cursor: pointer;
         text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .btn-batal:hover {
+        background-color: #b71c1c;
     }
 </style>
 @endpush
@@ -68,17 +85,12 @@
 <div class="form-container">
     <h3>Edit Barang Keluar</h3>
 
-    <form action="{{ route('barangkeluar.update', $barangKeluar->id) }}" method="POST">
+    <form action="{{ route('barang-keluar.update', $barangKeluar->id) }}" method="POST">
         @csrf
         @method('PUT')
 
         {{-- Barang --}}
         <input type="hidden" name="barang_id" value="{{ $barangKeluar->barang->id }}">
-
-        <div class="form-group">
-            <label>Kode Barang</label>
-            <input type="text" value="{{ $barangKeluar->barang->kode_barang }}" readonly>
-        </div>
 
         <div class="form-group">
             <label>Jenis</label>
@@ -115,8 +127,11 @@
             <input type="date" name="tanggal_pengembalian" value="{{ $barangKeluar->tanggal_pengembalian }}" required>
         </div>
 
-        <button type="submit" class="btn-simpan">Update</button>
-        <a href="{{ route('barang-keluar.index') }}" class="btn-batal">Batal</a>
+        {{-- Tombol sejajar dan ditengah --}}
+        <div class="button-group">
+            <button type="submit" class="btn-simpan">Update</button>
+            <a href="{{ route('barang-keluar.index') }}" class="btn-batal">Batal</a>
+        </div>
     </form>
 </div>
 @endsection
